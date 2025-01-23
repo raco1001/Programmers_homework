@@ -7,6 +7,7 @@
 
 - modified by the original
 - 깃허브에 올린 프로젝트 내려받기
+- 클론에서 수정했습니다.
 
 ---
 
