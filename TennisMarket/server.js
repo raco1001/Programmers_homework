@@ -9,7 +9,7 @@ function start(route, handle) {
     route(pathname, handle, res, queryData.productId);
   }
 
-  http.createServer(onRequest).listen(8888);
+  http.createServer(onRequest).listen(8889);
 }
 
 exports.start = start;
