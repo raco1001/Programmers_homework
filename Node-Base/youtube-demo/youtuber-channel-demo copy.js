@@ -127,10 +127,6 @@ app
    }})
    ;
 
-
-
-
-
 // 채널 개별 조회 (GET /channels/:id)
 // 채널 개별 수정 (PUT /channels/:id)
 // 채널 개별 삭제 (DELETE /channels/:id)
