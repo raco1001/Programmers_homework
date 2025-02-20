@@ -12,8 +12,6 @@ app.listen(PORT, () => console.log(`http://localhost:3007`));
 
 
 /** 채널 API*/
-
-
 const loadChannels = () => {
     try {
         if (!fs.existsSync(CHANNELS_FILE)) {
