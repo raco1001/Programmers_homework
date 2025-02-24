@@ -17,3 +17,5 @@
       console.log(name);
       console.log(created_at);
   })
+
+  module.exports = connection;
