@@ -1,0 +1,58 @@
+* [33m94b112e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m lecture commit
+* [33m765dfd7[m last
+* [33m7171360[m 250220 commit
+* [33m14762fe[m empty commit
+* [33m0dd8c12[m channel API add
+[31m|[m * [33m7faf8b7[m[33m ([m[1;31mprogrammers_homwork/team1-marco/week1-assignment[m[33m, [m[1;31morigin/team1-marco/week1-assignment[m[33m, [m[1;32mteam1-marco/week1-assignment[m[33m)[m last
+[31m|[m * [33mbc948b5[m 250220 commit
+[31m|[m * [33md979fa3[m empty commit
+[31m|[m * [33m4ef6ff3[m channel API add
+[31m|[m *   [33m7ac8496[m[33m ([m[1;31mprogrammers_homwork/main[m[33m, [m[1;31mprogrammers_homwork/HEAD[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge pull request #8 from raco1001/team1-marco/week1-assignment
+[31m|[m [33m|[m[34m\[m  
+[31m|[m [33m|[m *   [33m765a0c8[m Merge pull request #7 from raco1001/main
+[31m|[m [33m|[m [35m|[m[33m\[m  
+[31m|[m [33m|[m [35m|[m[33m/[m  
+[31m|[m [33m|[m[33m/[m[35m|[m   
+[31m|[m * [35m|[m [33m4c83011[m Merge pull request #6 from raco1001/team1-marco/week1-assignment
+[31m|[m [1;31m|[m[35m\[m[35m|[m 
+[31m|[m [1;31m|[m * [33m1d642ec[m Merge pull request #5 from raco1001/main
+[31m|[m [1;31m|[m[31m/[m[1;31m|[m 
+[31m|[m[31m/[m[1;31m|[m[1;31m/[m  
+[31m|[m *   [33mfeb1c9a[m Merge pull request #4 from raco1001/team1-marco/week1-assignment
+[31m|[m [1;35m|[m[31m\[m  
+[31m|[m [1;35m|[m[31m/[m  
+[31m|[m[31m/[m[1;35m|[m   
+* [1;35m|[m [33m49df60f[m API lecture start : youtuber
+* [1;35m|[m [33mc170166[m API recture start: youtuber
+[1;35m|[m[1;35m/[m  
+* [33m8b36cb6[m numberBaseBall refactor
+* [33mdfd37ce[m youtuber lecture : update, delete
+* [33m53a9bcd[m readme fix
+* [33mf6ef666[m regular commit for lectures
+* [33m7677ca1[m Shopping Mall Home Work
+*   [33m5331a85[m Merge pull request #3 from raco1001/feature/2
+[31m|[m[32m\[m  
+[31m|[m *   [33mff8ef11[m Merge branch 'main' into feature/2
+[31m|[m [33m|[m[31m\[m  
+[31m|[m [33m|[m[31m/[m  
+[31m|[m[31m/[m[33m|[m   
+* [33m|[m   [33m5349e5d[m Merge pull request #2 from raco1001/feature/1
+[35m|[m[36m\[m [33m\[m  
+[35m|[m * [33m|[m [33ma06b8a1[m feature1 commit
+[35m|[m[35m/[m [33m/[m  
+[35m|[m * [33md51bf23[m feature2 commit
+[35m|[m[35m/[m  
+*   [33mb12ef54[m Merge pull request #1 from raco1001/feature/login
+[1;31m|[m[1;32m\[m  
+[1;31m|[m * [33md861831[m Login Branch Commit
+[1;31m|[m[1;31m/[m  
+* [33mffd2a40[m Clone Fisrt Commit
+* [33m9dd5013[m My Third Commit
+* [33mad1909a[m My Second Commit
+* [33m11ec8d7[m rollback
+* [33me179161[m My Second Commit
+* [33m65efa7d[m My First Commit
+* [33mc0791ab[m Update README.md
+* [33m5edd21e[m Update README.md
+* [33m7032438[m Update README.md
+* [33mdec8df4[m Initial commit

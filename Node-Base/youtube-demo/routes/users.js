@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const conn = require('../mariadb'); // DB 연결 모듈 가져오기
+const conn = require('../mariadb'); 
 
 router.use(express.json());
 
@@ -40,11 +40,6 @@ router.post('/login', (req, res) => {
 
 // 회원 가입 (POST /join)
 router.post('/join', (req, res) => {
-
-   
-
-
-   
    try {
       console.log("요청 데이터:", req.body);
       let { userId, name, password, email, role } = req.body;
