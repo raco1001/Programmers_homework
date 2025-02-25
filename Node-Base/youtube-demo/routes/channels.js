@@ -1,177 +1,174 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
-const CHANNELS_FILE = path.join('/usr/src/youtube-demo/', 'channels.json'); 
+const conn = require('../mariadb');
 const router = express.Router();
+const {param, validationResult} = require('express-validator');
 
 router.use(express.json());
 
-/** 채널 API */
-const loadChannels = () => {
-    try {
-        if (!fs.existsSync(CHANNELS_FILE)) {
-            console.log("channels.json 파일이 없어서 새로 생성합니다.");
-            fs.writeFileSync(CHANNELS_FILE, JSON.stringify([])); 
-        }
 
-        const fileData = fs.readFileSync(CHANNELS_FILE, 'utf-8');
+const validate = (req, res)=>{
+    const err = validationResult(req);
 
-        if (!fileData.trim()) { 
-            console.log("channels.json 파일이 비어 있어 초기화합니다.");
-            fs.writeFileSync(CHANNELS_FILE, JSON.stringify([]));
-            return [];
-        }
-
-        const channels = JSON.parse(fileData);
-
-        if (!Array.isArray(channels)) { 
-            console.error("채널 데이터가 배열이 아님. 파일을 초기화합니다.");
-            fs.writeFileSync(CHANNELS_FILE, JSON.stringify([]));
-            return [];
-        }
-
-        return channels;
-    } catch (error) {
-        console.error("channels.json을 불러오는 중 오류 발생:", error);
-        return [];
+    if(!err.isEmpty()){
+        return res.status(400).json(err.array());
     }
-};
+}
 
-const saveChannels = (channels) => {
-    if (!Array.isArray(channels)) {
-        console.error("저장할 데이터가 배열이 아닙니다. 저장하지 않습니다.");
-        return;
-    }
-    try {
-        fs.writeFileSync(CHANNELS_FILE, JSON.stringify(channels, null, 2));
-    } catch (error) {
-        console.error("channels.json 저장 중 오류 발생:", error);
-    }
-};
 
-// 채널 전체 조회 (GET /channels)
+
 // 채널 생성 (POST /channels)
 router
-   .route('/')
-   .get((req, res) => {
-      try {
-         const channels = loadChannels();
-         res.json({ status: 'success', data: channels });
-      } catch (error) {
-         res.status(500).json({ status: 'error', message: '서버 오류 발생' });
-      }
-   })
-   .post((req, res) => {
-      try {
-         console.log("요청 데이터:", req.body);
-         let { user_id, channel_title, description, sub_num, video_num, is_active } = req.body;
+    .route('/:id')
+    .post( 
+        [
+            param('id').notEmpty().isUUID().withMessage('유효한 UUID 형식의 ID가 필요합니다.'),
+            validate
 
-         let channels = loadChannels();
-         if (!Array.isArray(channels)) {
-            throw new Error("채널 데이터가 배열이 아닙니다!");
-         }
+        ]
+        , (req, res) => {
+            try {
+                const { user_id, channel_title, description} = req.body;
 
-         console.log("로드된 채널 데이터:", channels);
+                if (!user_id || !channel_title) {
+                    return res.status(400).json({ status: 'error', message: 'user_id와 channel_title은 필수입니다.' });
+                }
 
-         if (channels.some(channel => channel.channel_title === channel_title)) {
-            return res.status(400).json({ status: 'error', message: '이미 존재하는 채널입니다.' });
-         }
 
-         const newChannel = {
-            id: channels.length > 0 ? Math.max(...channels.map(c => c.id)) + 1 : 1,
-            user_id,
-            channel_title,
-            description,
-            sub_num: sub_num || 0,
-            video_num: video_num || 0,
-            created_at: new Date().toISOString().split('T')[0],
-            updated_at: new Date().toISOString().split('T')[0],
-            is_active: is_active !== undefined ? is_active : true
-         };
+                const existing = conn.query(
+                    'SELECT id FROM channels WHERE channel_title = ?',
+                    [channel_title]
+                );
 
-         channels.push(newChannel);
-         saveChannels(channels);
+                if (existing.length > 0) {
+                    return res.status(400).json({ status: 'error', message: '이미 존재하는 채널명입니다.' });
+                }
 
-         console.log(`${newChannel.channel_title} 채널 생성 완료!`);
-         res.status(201).json({ status: 'success', message: `${newChannel.channel_title} 채널이 생성되었습니다!`, data: newChannel });
-      } catch (error) {
-         console.error("서버 오류 발생:", error);
-         res.status(500).json({ status: 'error', message: '서버 오류 발생' });
-      }
-   });
+                let sql = `INSERT INTO channels (user_id, channel_title, description) VALUES (?, ?, ?)`;
+                let values = [user_id, channel_title, description];
+                conn.query(
+                    sql,
+                    values,
+                    (err,result)=>{
+                        if(err){
+                            return res.status(500).json({ message: '채널정보를 생성할 수 없습니다.'});
+                        }
+
+                        res.status(201).json({ status: 'success', message: '채널이 생성되었습니다!', channel_id: result.insertId });
+
+                    }
+
+                );
+
+            } catch (error) {
+                console.error("채널 생성 중 오류 발생:", error);
+                res.status(500).json({ status: 'error', message: '서버 오류 발생' });
+            } 
+        }
+    );
+
+
 
 // 채널 개별 조회 (GET /channels/:id)
 // 채널 개별 수정 (PUT /channels/:id)
 // 채널 개별 삭제 (DELETE /channels/:id)
+
 router
-   .route('/:id')
-   .get((req, res) => {
-      try {
-         let { id } = req.params;
-         id = parseInt(id);
+    .route('/:id')
+    .get(async (req, res) => {
+        try {
+            let { id } = req.params;
 
-         const channels = loadChannels();
-         const channel = channels.find(channel => channel.id === id);
+            id = parseInt(id);
+            
+            let sql = 'SELECT * FROM channels WHERE id = ?';
+            let values = [id];
 
-         if (!channel) {
-            return res.status(404).json({ status: 'error', message: '채널 정보를 찾을 수 없습니다.' });
-         }
+            conn.query(sql, values,
+                (err, results)=>{
 
-         res.json({ status: 'success', data: channel });
-      } catch (error) {
-         res.status(500).json({ status: 'error', message: '서버 오류 발생' });
-      }
-   })
-   .put((req, res) => {
-      try {
-         let { id } = req.params;
-         id = parseInt(id);
+                    if (err) {
+                        return res.status(500).json({ status: 'error', message: '서버오류 발생' });
+                    }
 
-         let channels = loadChannels();
-         const index = channels.findIndex(channel => channel.id === id);
+                    if (results.length === 0) {
+                        return res.status(404).json({ status: 'error', message: '채널 정보를 찾을 수 없습니다.' });
+                    }
 
-         if (index === -1) {
-            return res.status(404).json({ status: 'error', message: '채널 정보를 찾을 수 없습니다.' });
-         }
+                    if (results.length > 1) {
+                        return res.status(404).json({ status: 'error', message: '채널 정보가 다수 존재합니다.' });
+                    }
 
-         let { channel_title, description, sub_num, video_num, is_active } = req.body;
-         let updatedChannel = channels[index];
+                    res.json({ status: 'success', data: results[0] });
+                }
+            );
+            
+        } catch (error) {
+            console.error("채널 조회 중 오류 발생:", error);
+            res.status(500).json({ status: 'error', message: '서버 오류 발생' });
+        } 
+    })
+    .put(async (req, res) => {
+            try {
+                let { id } = req.params;
+                id = parseInt(id);
+                const { channel_title, description, sub_num, video_num, is_active } = req.body;
 
-         if (channel_title) updatedChannel.channel_title = channel_title;
-         if (description) updatedChannel.description = description;
-         if (sub_num !== undefined) updatedChannel.sub_num = sub_num;
-         if (video_num !== undefined) updatedChannel.video_num = video_num;
-         if (is_active !== undefined) updatedChannel.is_active = is_active;
+                const existing = conn.query('SELECT * FROM channels WHERE id = ?', [id]);
+                if (existing.length === 0) {
+                    return res.status(404).json({ status: 'error', message: '채널 정보를 찾을 수 없습니다.' });
+                }
 
-         updatedChannel.updated_at = new Date().toISOString().split('T')[0];
+                let sql = `UPDATE channels SET 
+                            channel_title = COALESCE(?, channel_title),
+                            description = COALESCE(?, description),
+                            sub_num = COALESCE(?, sub_num),
+                            video_num = COALESCE(?, video_num),
+                            is_active = COALESCE(?, is_active),
+                            updated_at = NOW()
+                            WHERE id = ?`;
+                let values = [channel_title, description, sub_num, video_num, is_active, id];
 
-         channels[index] = updatedChannel;
-         saveChannels(channels);
+                conn.query(
+                    sql,
+                    values,
+                    (err,results)=>{
+                        if(err){
+                            return res.status(500).json({ message: '채널정보를 업데이트 할 수 없습니다.'});
+                        }
+                        res.json({ status: 'success', message: '채널 정보가 업데이트되었습니다.', affectedRows: results.affectedRows });
+                    }
+                );
 
-         res.json({ status: 'success', message: '채널 정보가 업데이트되었습니다.', data: updatedChannel });
-      } catch (error) {
-         res.status(500).json({ status: 'error', message: '서버 오류 발생' });
-      }
-   })
-   .delete((req, res) => {
-      try {
-         let { id } = req.params;
-         id = parseInt(id);
+                
 
-         let channels = loadChannels();
-         const index = channels.findIndex(channel => channel.id === id);
+            } catch (error) {
+                console.error("채널 수정 중 오류 발생:", error);
+                res.status(500).json({ status: 'error', message: '서버 오류 발생' });
+            }
+    })
+    .delete(async (req, res) => {
+            try {
+                const { id } = req.params;
+                id = parseInt(id);
 
-         if (index === -1) {
-            return res.status(404).json({ status: 'error', message: '해당 채널이 존재하지 않습니다.' });
-         }
+                const existing = await conn.query('SELECT * FROM channels WHERE id = ?', [id]);
+                if (existing.length === 0) {
+                    return res.status(404).json({ status: 'error', message: '해당 채널이 존재하지 않습니다.' });
+                }
 
-         const deletedChannel = channels.splice(index, 1);
-         saveChannels(channels);
+                const result = await conn.query('DELETE FROM channels WHERE id = ?', [id]);
 
-         res.json({ status: 'success', message: `채널 '${deletedChannel[0].channel_title}'이 삭제되었습니다.` });
-      } catch (error) {
-         res.status(500).json({ status: 'error', message: '서버 오류 발생' });
-      }
-   });
+                res.json({ status: 'success', message: `채널이 삭제되었습니다.`, affectedRows: result.affectedRows });
+
+            } catch (error) {
+                console.error("채널 삭제 중 오류 발생:", error);
+                res.status(500).json({ status: 'error', message: '서버 오류 발생' });
+            } 
+    });
+
+
+
+
+
 
 module.exports = router;

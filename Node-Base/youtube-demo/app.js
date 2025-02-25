@@ -1,17 +1,19 @@
 const express = require('express');
 const app = express();
+const authRouter = require('./routes/auth');
+const userRouter = require('./routes/users');
+const channelRouter = require('./routes/channels');
+
 
 app.listen(3000);
 
-//user-demo router
 
-const userRouter = require('./routes/users');
+//auth router
+app.use('/auth',authRouter );
 
-app.use('/',userRouter);
+//user router
+app.use('/users',userRouter);
 
 
-//channel-demo router
-
-const channelRouter = require('./routes/channels');
-
+//channel router
 app.use('/channels', channelRouter);
