@@ -1,5 +1,5 @@
 const mysql = require('mysql2/promise');
-const config = require('../config/env'); // 환경 변수 가져오기
+const config = require('../config/env'); 
 
 const pool = mysql.createPool({
     host: config.DB_HOST,

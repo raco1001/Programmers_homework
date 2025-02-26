@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 exports.authenticateToken = (req, res, next) => {
-    const token = req.header('Authorization')?.split(' ')[1]; // "Bearer <TOKEN>"
+    const token = req.header('Authorization')?.split(' ')[1]; 
     if (!token) {
         return res.status(401).json({ status: 'error', message: '인증 토큰이 없습니다.' });
     }

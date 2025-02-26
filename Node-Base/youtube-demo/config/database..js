@@ -1,4 +1,4 @@
-require('dotenv').config(); // 환경 변수 로드
+require('dotenv').config(); 
 const databaseConfig = {
     development: {
         host: process.env.DB_HOST_DEV || 'localhost',
