@@ -5,10 +5,10 @@ exports.findUserByEmail = async (email) => {
     return rows.length ? rows[0] : null;
 };
 
-exports.insertUser = async (id, name, email, password, role) => {
+exports.insertUser = async (name, email, password) => {
     const [result] = await pool.query(
-        'INSERT INTO users (id, name, email, password, role, created_at, updated_at, is_activated) VALUES (?, ?, ?, ?, ?, NOW(), NOW(), 1)',
-        [id, name, email, password, role]
+        'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
+        [name, email, password]
     );
-    return { id, name, email, role };
+    return { name, email };
 };

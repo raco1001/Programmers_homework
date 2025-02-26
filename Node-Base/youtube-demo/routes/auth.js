@@ -25,4 +25,10 @@ router.post(
     register
 );
 
+
+router.post('/logout', (req, res) => {
+    res.clearCookie('jwt');
+    res.json({ status: 'success', message: '로그아웃 완료' });
+});
+
 module.exports = router;
