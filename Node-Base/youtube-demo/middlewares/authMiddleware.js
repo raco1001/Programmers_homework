@@ -11,6 +11,6 @@ exports.authenticateToken = (req, res, next) => {
             return res.status(403).json({ status: 'error', message: '유효하지 않은 토큰입니다.' });
         }
         req.user = user;
-        next();
+        return next();
     });
 };

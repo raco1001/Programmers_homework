@@ -1,27 +1,17 @@
-require('dotenv').config(); 
-const databaseConfig = {
-    development: {
-        host: process.env.DB_HOST_DEV || 'localhost',
-        user: process.env.DB_USER_DEV || 'root',
-        password: process.env.DB_PASS_DEV || 'root',
-        database: process.env.DB_NAME_DEV || 'Youtube_dev',
-        port: process.env.DB_PORT_DEV || 3306
-    },
-    production: {
-        host: process.env.DB_HOST_PROD,
-        user: process.env.DB_USER_PROD,
-        password: process.env.DB_PASS_PROD,
-        database: process.env.DB_NAME_PROD,
-        port: process.env.DB_PORT_PROD
-    },
-    test: {
-        host: process.env.DB_HOST_TEST || 'localhost',
-        user: process.env.DB_USER_TEST || 'test_user',
-        password: process.env.DB_PASS_TEST || 'test_pass',
-        database: process.env.DB_NAME_TEST || 'Youtube_test',
-        port: process.env.DB_PORT_TEST || 3306
-    }
-};
+const mysql = require('mysql2/promise');
+const { DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT } = require('./env'); // 환경 변수 로드
 
-const env = process.env.NODE_ENV || 'development';
-module.exports = databaseConfig[env];
+const pool = mysql.createPool({
+    host: DB_HOST,
+    user: DB_USER,
+    password: DB_PASS,
+    database: DB_NAME,
+    port: DB_PORT,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
+
+console.log(`✅ Connected to database: ${DB_NAME} (${DB_HOST}:${DB_PORT})`);
+
+module.exports = pool;
