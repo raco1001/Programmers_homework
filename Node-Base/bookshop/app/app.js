@@ -1,0 +1,35 @@
+const express = require('express');
+const app = express();
+const authRouter = require('../features/auth/auth-router');
+const userRouter = require('../features/users/userRouter');
+const cartRouter = require('../features/carts/cartRouter');
+const orderRouter = require('../features/orders/orderRouter');
+const bookRouter = require('../features/books/bookRouter');
+const likeRouter = require('../features/likes/likeRouter');
+const reviewRouter = require('../features/reviews/reviewRouter');
+const paymentRouter = require('../features/payments/paymentRouter');
+const deliveryRouter = require('../features/deliveries/deliveryRouter');
+
+
+
+const errorHandler = require('../shared/middlewares/errorHandler');
+
+app.use(express.json());
+
+
+app.use('/auth', authRouter);
+
+app.use('/users', userRouter);
+
+app.use('/books', bookRouter);
+app.use('/likes', likeRouter);
+app.use('/reviews', reviewRouter);
+
+app.use('/carts', cartRouter);
+app.use('/orders', orderRouter);
+app.use('/payments', paymentRouter);
+app.use('/deliveries', deliveryRouter);
+
+app.use(errorHandler);
+
+module.exports = app; 
