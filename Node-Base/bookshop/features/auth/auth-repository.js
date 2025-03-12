@@ -1,4 +1,4 @@
-const db = require("../app/config/database");
+const db = require("../../app/database/mariadb");
 
 exports.findUserByEmail = async (email) => {
     try {

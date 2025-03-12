@@ -1,4 +1,4 @@
-const { getUser, updateUserPassword, removeUser } = require('../../services/userService');
+const { getUser, updateUserPassword, removeUser } = require('./user-service');
 
 const getUserById = async (req, res, next) => {
     try {

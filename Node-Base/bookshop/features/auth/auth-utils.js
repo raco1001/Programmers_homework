@@ -43,4 +43,4 @@ const requireAdmin = (req, res, next) => {
    next();
 };
 
-module.exports = { hashPassword, verifyPassword, generateAccessToken, generateRefreshToken, generateTokens, generateAccessTokenFromRefresh, requireAdmin };
+module.exports = { hashPassword, verifyPassword, generateAccessToken, generateRefreshToken, generateTokens, requireAdmin };

@@ -1,4 +1,4 @@
-const { findUserById, deleteUserById, updateUserById } = require('./userRepository');
+const { findUserById, deleteUserById, updateUserById } = require('./user-repository');
 const { hashPassword } = require('../auth/auth-utils');
 
 getUser = async (userId) => {

@@ -1,4 +1,4 @@
-const { findUserByEmail, createUser } = require("./repository");
+const { findUserByEmail, createUser } = require("./auth-repository");
 const {  hashPassword, verifyPassword, generateTokens, generateRefreshToken } = require("./auth-utils");
 
 

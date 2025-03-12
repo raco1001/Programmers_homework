@@ -1,35 +1,37 @@
 const express = require('express');
 const router = express.Router();
-const { body, param } = require('express-validator');
+require('express-validator');
 const { validateRequest } = require('../middlewares/validationMiddleware');
 const {
-        createReview,
-        getReviewsByBookId,
-        updateReview,
-        deleteReview
-    } = require('../controllers/ReviewController');
+        createBook,
+        getBookByRange,
+        getBookById,
+        updateBook,
+        deleteBook
+    } = require('./book-controller');
+
+router
+    .route('/')
+    .get(
+        [
+            
+        ],
+        getBookByRange
+    );
 
 router
     .route('/:id')
-    .post(
-        [
-            body('user_id').isUUID().withMessage('유효한 UUID 형식의 user_id가 필요합니다.'),
-            body('Review_title').notEmpty().withMessage('채널 제목을 입력하세요.'),
-            validateRequest
-        ],
-        createReview
-    )
     .get(
         [param('id').isUUID().withMessage('유효한 UUID 형식의 ID가 필요합니다.'), validateRequest],
-        getReviewsByBookId
+        getBookById
     )
     .put(
         [param('id').isUUID().withMessage('유효한 UUID 형식의 ID가 필요합니다.'), validateRequest],
-        updateReview
+        updateBook
     )
     .delete(
         [param('id').isUUID().withMessage('유효한 UUID 형식의 ID가 필요합니다.'), validateRequest],
-        deleteReview
+        deleteBook
     );
 
 module.exports = router;

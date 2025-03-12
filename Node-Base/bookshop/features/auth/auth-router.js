@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const authMiddleware = require("./auth-middleware");
-const authController = require("./controller");
+const authController = require("./auth-controller");
 const joinFields = ["name","email","password"];
 const loginFields = ["email", "password"];
 

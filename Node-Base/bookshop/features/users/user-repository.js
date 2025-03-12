@@ -1,4 +1,4 @@
-const pool = require('../database/mariadb');
+const pool = require('../../app/database/mariadb');
 
 
 findUserById = async (userId) => {
