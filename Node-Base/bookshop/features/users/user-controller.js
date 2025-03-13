@@ -19,9 +19,9 @@ const getUserById = async (req, res, next) => {
 
 const authenticatUserByEmail = async (req, res, next) => {
     try {
-        const useremail = req.user.email;  
+        const userEmail = req.email;  
         
-        const user = await getUserByEmail(useremail);
+        const user = await getUserByEmail(userEmail);
         if (!user) {
             return res.status(404).json({ status: 'error', message: '사용자를 찾을 수 없습니다.' });
         }

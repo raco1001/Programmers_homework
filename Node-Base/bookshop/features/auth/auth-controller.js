@@ -1,10 +1,13 @@
 const authService = require("./auth-service");
 
 const register = async (req, res, next) => {
+    console.log(`[register] 요청 받음: ${JSON.stringify(req.body)}`);
     try {
         const { name, email, password } = req.body;
-        const user = await authService.registerUser(name, email, password);
-        res.status(201).json({ status: "success", message: `${user.name}님 가입을 환영합니다!` });
+        const result = await authService.registerUser(name, email, password);
+        if(result === 1){
+            res.status(201).json({ status: "success", message: `${name}님 가입을 환영합니다!` })
+        };
     } catch (error) {
         next(error);
     }
@@ -19,17 +22,26 @@ const login = async (req, res, next) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
-            maxAge: 7 * 24 * 60 * 60 * 1000, 
+            maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
-        res.status(200).json({ status: "success", accessToken });
+        res.status(200).json({ 
+            status: "success", 
+            accessToken 
+        });
     } catch (error) {
         next(error);
     }
 };
 
+
+
 const updateRefreshToken = async (req, res, next) => {
-    try {        
+    try {
+        if (!req.user) {
+            return res.status(401).json({ status: "error", message: "유효하지 않은 Refresh Token입니다." });
+        }
+
         const accessToken = await authService.refreshToken(req.user);
         res.status(200).json({ status: "success", accessToken });
     } catch (error) {
@@ -37,11 +49,11 @@ const updateRefreshToken = async (req, res, next) => {
     }
 };
 
-const logout = (req, res) => {
+
+const logout = async (req, res) => {
     res.clearCookie("refreshToken");
-    res.clearCookie("accessToken"); 
+    res.clearCookie("accessToken");
     res.status(200).json({ status: "success", message: "로그아웃 완료" });
 };
 
-
-module.exports = { register , login, updateRefreshToken, logout };
+module.exports = { register, login, updateRefreshToken, logout };
