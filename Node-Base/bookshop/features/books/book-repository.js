@@ -30,9 +30,9 @@ const findBookDetail = async (bookId) => {
    
    console.log(bookDetail);
 
-   if (!bookDetail.length) return [0,0];
+   if (!bookDetail) return [0,0];
 
-   const categoryPath = await pool.query(
+   const [categoryPath, info] = await pool.query(
       `WITH RECURSIVE CategoryPath AS (
                SELECT id, parent_id, name
                FROM categories
