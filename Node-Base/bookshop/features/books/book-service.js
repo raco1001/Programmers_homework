@@ -2,16 +2,44 @@ const {findBooks, findBookDetail} = require("./book-repository")
 const {uuidToBinary} = require("../../shared/utils/uuidToBinary");
 
 
-const getBooks = async ({ category, startDate, endDate }) => {
+const getBooks = async ({ category, startDate, endDate, page, limit }) => {
    const params = [startDate, endDate];
+   console.log(category, startDate, endDate, page, limit);
 
-   const select = "SELECT * FROM books a JOIN categories b ON a.category_id = b.id WHERE ";
-   const range = "a.created_at BETWEEN ? AND ?"
-   const finalCategory  = category === "ALL" ? "" : `a.main_category = ${category} AND `;
+   const range = "WHERE publication_date BETWEEN ? AND ?"
+   const finalCategory  = category === "ALL" ? "" : `AND main_category = '${category}'`;
    
-   const query = select + finalCategory + range;
-   
-   const [rows] = await findBooks(query, params);
+   console.log('final category: '+finalCategory);
+   const query = `SELECT 
+                     HEX(b.id) as id
+                     ,b.title
+                     ,b.author
+                     ,b.summary
+                     ,a.likes
+                     ,a.price
+                     ,a.img_path
+                  FROM 
+                     (
+                        SELECT 
+                           id
+                           ,likes
+                           ,price
+                           ,img_path
+                        FROM
+                           products
+                        WHERE product_table_name = 'books'
+                        ${finalCategory} 
+                     ) a 
+                  JOIN  (  SELECT id, title, author, summary 
+                           FROM books
+                           ${range}
+                        ) b 
+                  ON a.id = b.id
+                  LIMIT ${limit} OFFSET ${(page-1)*limit}`
+                  ;
+
+   const rows= await findBooks(query, params);
+   console.log(rows);
    return rows;
 };
 

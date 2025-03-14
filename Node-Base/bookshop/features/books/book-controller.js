@@ -3,14 +3,18 @@ const { format, subMonths } = require('date-fns');
 
 const getBooksByRange = async (req, res, next) => {
     try {
-        const { category = "ALL", startDate, endDate } = req.query;
-        const defaultStartDate = format(subMonths(new Date(), 3), "yyyy-MM-dd");
+        const { category = "ALL", startDate, endDate, page = 1, limit = 8 } = req.query;
+
         const defaultEndDate = format(new Date(), "yyyy-MM-dd");
+        const defaultStartDate = format(subMonths(new Date(), 3), "yyyy-MM-dd");
+        console.log(defaultStartDate, defaultEndDate);
 
         const books = await getBooks({
             category,
             startDate: startDate || defaultStartDate,
             endDate: endDate || defaultEndDate,
+            page: parseInt(page, 10),
+            limit: parseInt(limit, 10),
         });
 
         res.status(200).json({ status: "success", data: books });
@@ -22,7 +26,7 @@ const getBooksByRange = async (req, res, next) => {
 const getBookById = async (req, res, next) => {
    try {
        const bookId = req.params.id; 
-       console.log(bookId);
+
        if (!bookId) {
            return res.status(400).json({ status: "error", message: "Book ID is required." });
        }

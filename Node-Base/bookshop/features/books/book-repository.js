@@ -3,6 +3,7 @@ const {binaryToUuid} = require("../../shared/utils/uuidToBinary");
 
 const findBooks = async (query, params) => {
    const [rows] = await pool.query(query, params);
+   console.log(rows);
    return rows.length ? rows : [];
 };
 
