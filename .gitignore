@@ -1,2 +1,4 @@
 Node-Base/youtube-demo/.env
 Node-Base/bookshop/.env
+Node-Base/node_modules
+Node-Base/node_modules/*
