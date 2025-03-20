@@ -26,8 +26,12 @@ const updateOrderItem = async (req, res, next) => {
 
 const getOrderItems = async (req, res, next) => {
     try {
-        const { userId } = req.params;
-        const items = await OrderService.getOrderItemsByUser(userId);
+        console.log( req.query);
+        const userId = req.query.userId;
+        const pageSize = Number(req.query.pageSize);
+        const pageNumber  = Number(req.query.pageNumber);
+        console.log(userId, pageSize, pageNumber);
+        const items = await OrderService.getOrderItemsByUser(userId, pageSize, pageNumber);
         res.status(200).json({ status: 'success', data: items });
     } catch (err) {
         next(err);

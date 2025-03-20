@@ -1,19 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const { getOrderItems, updateOrderItem} = require('./order-controller');
+const {  getOrderItems, updateOrderItem} = require('./order-controller');
 
 
 router
     .route('/')
-    .get(
-        getOrderItems
-    )
     .put(
         updateOrderItem
     );
 
 router
-    .route('/?userId=userId')
+    .route('/order-items')
     .get(
         getOrderItems
     );

@@ -55,14 +55,16 @@ const updateOrderItem = async (userId, productId, quantity) => {
 };
 
 
-const findOrderItemsByUser = async (userId) => {
+const findOrderItemsByUser = async (uid, pageSize, pageNumber) => {
+    const offset = (pageNumber - 1) * pageSize;
     const query = `
         SELECT oi.count, p.id as product_id, p.product_table_name, p.price, p.img_path
         FROM order_items oi
         JOIN products p ON oi.product_id = p.id
         WHERE oi.user_id = ?
+        LIMIT ? OFFSET  ?
     `;
-    const [rows] = await db.query(query, [userId]);
+    const [rows] = await db.query(query, [uid, pageSize, offset]);
     return rows;
 };
 
