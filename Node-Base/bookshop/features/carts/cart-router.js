@@ -19,7 +19,7 @@ router
     );
 
 router
-    .route('/?userId=userId')
+    .route('/:userId')
     .get(
         getCartItems
     );

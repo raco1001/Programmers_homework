@@ -3,6 +3,7 @@ const cartService = require('./cart-service');
 const addToCart = async (req, res, next) => {
     try {
         const { userId, productId, quantity } = req.body;
+        console.log(userId, productId, quantity);
         await cartService.addCartItem(userId, productId, quantity);
         res.status(201).json({ status: 'success', message: '장바구니에 상품 추가 완료' });
     } catch (err) {

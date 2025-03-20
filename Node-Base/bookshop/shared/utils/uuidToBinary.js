@@ -1,10 +1,16 @@
 
-exports.uuidToBinary = (uuid) => {
+
+
+const uuidToBinary = (uuid) => {
+    if (!uuid || typeof uuid !== 'string') {
+        throw new TypeError(`Invalid UUID: ${uuid}`);
+    }
     return Buffer.from(uuid.replace(/-/g, ""), "hex");
 };
 
 
-exports.binaryToUUID = (binary) => {
+
+const binaryToUUID = (binary) => {
     const hex = binary.toString("hex"); 
     return [
         hex.substring(0, 8),
@@ -14,3 +20,6 @@ exports.binaryToUUID = (binary) => {
         hex.substring(20, 32),
     ].join("-"); 
 };
+
+
+module.exports = {uuidToBinary, binaryToUUID}

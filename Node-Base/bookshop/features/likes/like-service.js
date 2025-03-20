@@ -11,7 +11,7 @@ getLike = async (userId,bookId) => {
 };
 
 
-addLike = async (userId, bookId) => {
+createLike = async (userId, bookId) => {
    const result = await  insertLike(userId, bookId);
     
    return result; 
@@ -32,6 +32,6 @@ deleteLikeIfExists = async (userId) => {
 
 module.exports = {
     getLike,
-    addLike,
+    createLike,
     deleteLikeIfExists
 };

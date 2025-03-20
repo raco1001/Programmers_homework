@@ -2,9 +2,9 @@ const db = require('../../app/database/mariadb');
 
 const insertCartItem = async (userId, productId, quantity) => {
     const query = `
-        INSERT INTO carts (user_id, product_id, quantity, created_at, updated_at)
-        VALUES (?, ?, ?, NOW(), NOW())
-        ON DUPLICATE KEY UPDATE quantity = quantity + ? , updated_at = NOW()
+        INSERT INTO carts (user_id, product_id, count)
+        VALUES (user_uuid_bin, product_uuid_bin, ?)
+        ON DUPLICATE KEY UPDATE count = count + ? , updated_at = NOW()
     `;
     await db.query(query, [userId, productId, quantity, quantity]);
 };
@@ -18,20 +18,48 @@ const updateCartItem = async (userId, productId, quantity) => {
    await db.query(query, [quantity, userId, productId]);
 };
 
-const deleteCartItem = async (userId, productId) => {
+const deleteCartItems = async (userId, productId) => {
     const query = `DELETE FROM carts WHERE user_id = ? AND product_id = ?`;
     await db.query(query, [userId, productId]);
 };
 
 const findCartItemsByUser = async (userId) => {
     const query = `
-        SELECT c.quantity, p.id as product_id, p.product_table_name, p.price, p.img_path
-        FROM carts c
-        JOIN products p ON c.product_id = p.id
-        WHERE c.user_id = ?
+        SELECT 
+            a.user_id  as userId,
+            c.id as bookId,
+            b.main_category,
+            b.img_path,
+            b.price,
+            a.count,
+            c.title,
+            c.author,
+            c.pages,
+            c.summary
+        FROM (
+            SELECT user_id, product_id, count, updated_at
+            FROM carts 
+            WHERE user_id = ?
+        ) a 
+        JOIN (
+            SELECT * FROM products 
+            WHERE product_table_name = 'books') b ON a.product_id = b.id
+        JOIN books c ON b.id = c.id
+        ORDER BY a.updated_at DESC
     `;
     const [rows] = await db.query(query, [userId]);
     return rows;
 };
 
-module.exports = { insertCartItem, deleteCartItem, findCartItemsByUser, updateCartItem };
+
+const deleteCartItem = async (cartItemBids) => {
+    if (cartItemBids.length === 0) return;  // 방어 코드
+
+    const placeholders = cartItemBids.map(() => '?').join(', ');
+    const query = `DELETE FROM carts WHERE id IN (${placeholders})`;
+
+    await db.query(query, cartItemBids);
+};
+
+
+module.exports = { insertCartItem, deleteCartItems, findCartItemsByUser, updateCartItem };

@@ -2,11 +2,11 @@ const { v4: uuidv4 } = require('uuid');
 const crypto = require("crypto");
 
 const generateUUID = () => {
-    return uuidv4().replace(/-/g, ''); // '-' 제거하여 32자리 HEX 값 반환
+    return uuidv4().replace(/-/g, ''); 
 };
 
 const generateSalt = () => {
-    return crypto.randomBytes(16).toString("hex"); // 16바이트(128비트) Salt 생성
+    return crypto.randomBytes(16).toString("hex");
 };
 
 const generateBinaryId = (uuid, salt) => {

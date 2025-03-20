@@ -1,28 +1,39 @@
 const cartRepo = require('./cart-repository');
-const { toBinaryUUID } = require('./cart-utils'); 
+const { uuidToBinary, binaryToUUID } = require('../../shared/utils/uuidToBinary'); 
 
 const addCartItem = async (userId, productId, quantity) => {
-    const uid = toBinaryUUID(userId);
-    const pid = toBinaryUUID(productId);
+    console.log('UUID 변형 시작');
+    const uid = uuidToBinary(userId);
+    console.log(uid);
+    const pid = uuidToBinary(productId);
     return await cartRepo.insertCartItem(uid, pid, quantity);
 };
 
 const modifyCartItem = async (userId, productId) => {
-   const uid = toBinaryUUID(userId);
-   const pid = toBinaryUUID(productId);
+   const uid = uuidToBinary(userId);
+   const pid = uuidToBinary(productId);
    return await cartRepo.updateCartItem(uid, pid);
 };
 
 
 const removeCartItem = async (userId, productId) => {
-    const uid = toBinaryUUID(userId);
-    const pid = toBinaryUUID(productId);
-    return await cartRepo.deleteCartItem(uid, pid);
+    const uid = uuidToBinary(userId);
+    const pid = uuidToBinary(productId);
+    
+    return  await cartRepo.deleteCartItem(uid, pid);
+
+   
 };
 
 const getCartItemsByUser = async (userId) => {
-    const uid = toBinaryUUID(userId);
-    return await cartRepo.findCartItemsByUser(uid);
+    const uid = uuidToBinary(userId);
+    const cartItems = await cartRepo.findCartItemsByUser(uid);
+    const transformed = cartItems.map(item => ({
+        ...item,
+        userId: binaryToUUID(item.userId),
+        bookId: binaryToUUID(item.bookId)
+    }));
+    return transformed;
 };
 
 module.exports = { addCartItem, removeCartItem, getCartItemsByUser, modifyCartItem };

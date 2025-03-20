@@ -1,4 +1,4 @@
-const{ getLikes, addLike, deleteLikeIfExists} = require('./like-service')
+const{ getLikes, createLike, deleteLikeIfExists} = require('./like-service')
 
 
 const addLike = async (req, res, next) => {
@@ -14,7 +14,7 @@ const addLike = async (req, res, next) => {
             return res.status(400).json({ status: "error", message: "이미 좋아요를 눌렀습니다." });
          } 
 
-         const result = addLike(userId, bookId);
+         const result = createLike(userId, bookId);
 
          if(result === 0){
             return res.status(400).json({ status: "error", message: "좋아요를 누를 수 없습니다." });
