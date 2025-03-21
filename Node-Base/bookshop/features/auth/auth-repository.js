@@ -22,8 +22,6 @@ exports.findUserByEmail = async (email) => {
     }
 };
 
-
-
 exports.createUser = async (id, name, email, password, salt) => {
     try {
         console.log(`유저 생성 중: ${id}, ${name}, ${email}, ${password}, ${salt}`);
@@ -53,10 +51,10 @@ exports.storeRefreshToken = async (userId, refreshToken) => {
 exports.getStoredRefreshToken = async (userId) => {
     try {
         const [rows] = await db.query(
-            "SELECT refresh_token FROM users WHERE id = ?",
+            "SELECT email, name, refresh_token FROM users WHERE id = ?",
             [userId]
         );
-        return rows.length > 0 ? rows[0].refresh_token : null;
+        return rows.length > 0 ? rows[0] : null;
     } catch (error) {
         throw error;
     }

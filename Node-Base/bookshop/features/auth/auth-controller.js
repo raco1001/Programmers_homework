@@ -1,5 +1,8 @@
 const authService = require("./auth-service");
 
+
+
+
 const register = async (req, res, next) => {
     console.log(`[register] 요청 받음: ${JSON.stringify(req.body)}`);
     try {
@@ -16,7 +19,7 @@ const register = async (req, res, next) => {
 const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        const { accessToken, refreshToken } = await authService.authenticateUser(email, password);
+        const { userId, userName, accessToken, refreshToken } = await authService.authenticateUser(email, password);
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
@@ -27,7 +30,8 @@ const login = async (req, res, next) => {
 
         res.status(200).json({ 
             status: "success", 
-            accessToken 
+            accessToken,
+            user: {userId, userName} 
         });
     } catch (error) {
         next(error);
@@ -37,13 +41,13 @@ const login = async (req, res, next) => {
 
 
 const updateRefreshToken = async (req, res, next) => {
-    try {
-        if (!req.user) {
-            return res.status(401).json({ status: "error", message: "유효하지 않은 Refresh Token입니다." });
-        }
+    try {              
+        const userId = req.userId;              
+        const userRefreshToken = req.cookies.refreshToken;
+        
+        const accessToken = await authService.refreshToken(userId, userRefreshToken);
 
-        const accessToken = await authService.refreshToken(req.user);
-        res.status(200).json({ status: "success", accessToken });
+        res.status(200).json({ status: "토큰이 새로 발급되었습니다.", accessToken });
     } catch (error) {
         next(error);
     }

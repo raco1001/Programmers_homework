@@ -1,7 +1,8 @@
-const { findUserByEmail, createUser } = require("./auth-repository");
-const { hashPassword, verifyPassword, generateTokens, generateRefreshToken } = require("./auth-utils");
+const { findUserByEmail, createUser, storeRefreshToken, getStoredRefreshToken } = require("./auth-repository");
+const { hashPassword, verifyPassword, generateTokens} = require("./auth-utils");
 const { generatePK } = require("../../shared/utils/generatePK");
-
+const { binaryToUUID, uuidToBinary } = require("../../shared/utils/uuidToBinary");
+const uuidUtil = require("../../shared/utils/uuidToBinary");
 
 const registerUser = async (name, email, password) => {
 
@@ -30,27 +31,31 @@ const authenticateUser = async (email, password) => {
     if (!user || !verifyPassword(password, user.salt, user.password)) {
         throw new Error("이메일 또는 비밀번호가 일치하지 않습니다.");
     }
-
-
+    const userId = uuidUtil.binaryToUUID(user.id);
+    const userName = user.name;
     const { accessToken, refreshToken } = generateTokens(user);
 
     await storeRefreshToken(user.id, refreshToken);
 
-    return { accessToken, refreshToken };
+    return { userId, userName,  accessToken, refreshToken };
 };
 
 
-const refreshToken = async (refreshToken) => {
-    if (!refreshToken) throw new Error("Refresh Token이 없습니다.");
+const refreshToken = async (userId, userRefreshToken) => {
+    if (!userRefreshToken) throw new Error("Refresh Token이 없습니다.");
 
-    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-    const storedToken = await getStoredRefreshToken(decoded.id);
-    
-    if (!storedToken || storedToken !== refreshToken) {
-        throw new Error("유효하지 않은 Refresh Token입니다.");
+    const userBId = uuidToBinary(userId);
+    const refreshAuthResult= await getStoredRefreshToken(userBId);
+    const email = refreshAuthResult.email;
+    const storedToken = refreshAuthResult.refresh_token;
+    const name = refreshAuthResult.name;
+        
+
+    if (!storedToken || storedToken !== userRefreshToken) {
+        throw new Error("유효하지 않은 Refresh Token입니다. 다시 로그인 해주세요!");
     }
 
-    return generateAccessToken({ id: decoded.id });
+    return generateAccessToken({ id: userId, email, name});
 };
 
 module.exports = { registerUser, authenticateUser, refreshToken };

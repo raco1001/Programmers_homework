@@ -25,6 +25,20 @@ const validateTypes = (fieldTypes) => {
     };
 };
 
+const validateAccessToken = (req, res, next) => {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "Access Token 없음" });
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (error) {
+        return res.status(403).json({ message: "Access Token 유효하지 않음" });
+    }
+};
+
+
 const validateRefreshToken = (req, res, next) => {
     try {
         const refreshToken = req.cookies.refreshToken;
@@ -35,15 +49,16 @@ const validateRefreshToken = (req, res, next) => {
 
         jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, decoded) => {
             if (err) {
-                return res.status(403).json({ message: "유효하지 않은 Refresh Token입니다." });
+                return res.status(403).json({ message: "유효하지 않은 Refresh Token입니다. 다시 로그인 해주세요" });
             }
-            req.user = decoded;
-            next();
+            req.userId = decoded;
         });
+        
+        next();
     } catch (error) {
         console.error("토큰 검증 중 오류 발생:", error);
         return res.status(500).json({ message: "서버 오류 발생" });
     }
 };
 
-module.exports = { validateRefreshToken, validateRequestBody, validateTypes };
+module.exports = { validateAccessToken, validateRefreshToken, validateRequestBody, validateTypes };
