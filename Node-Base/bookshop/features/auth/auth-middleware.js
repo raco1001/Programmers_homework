@@ -1,64 +1,88 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken')
+const { binaryToUUID } = require('../../shared/utils/convertIds')
+const { requestTypes } = require('./auth-entities')
 
-const validateRequestBody = (requiredFields) => {
-    return (req, res, next) => {
-        console.log(`[validateRequestBody] 요청 받음: ${JSON.stringify(req.body)}`);
-        for (const field of requiredFields) {
-            if (!req.body[field]) {
-                return res.status(400).json({ message: `${field} 값이 필요합니다.` });
-            }
-        }
-        next();
-    };
-};
+const validateSchema = (schema) => {
+  return (req, res, next) => {
+    const { error } = schema.validate(req.body, { abortEarly: false })
 
-const validateTypes = (fieldTypes) => {
-    return (req, res, next) => {
-        for (const field in fieldTypes) {
-            if (req.body[field] !== undefined && req.body[field] !== null) { 
-                if (typeof req.body[field] !== fieldTypes[field]) {
-                    return res.status(400).json({ message: `${field} 값의 타입이 올바르지 않습니다.` });
-                }
-            }
-        }
-        next();
-    };
-};
+    if (error) {
+      const errors = error.details.map((detail) => detail.message)
+      return res.status(400).json({
+        status: 'error',
+        message: 'Validation failed',
+        errors,
+      })
+    }
+    next()
+  }
+}
+
+const validateJoin = () => {
+  return validateSchema(requestTypes.join)
+}
+
+const validateLogin = () => {
+  return validateSchema(requestTypes.login)
+}
+
+const validateRefresh = () => {
+  return validateSchema(requestTypes.refresh)
+}
 
 const validateAccessToken = (req, res, next) => {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) return res.status(401).json({ message: "Access Token 없음" });
+  const token = req.headers.authorization?.split(' ')[1]
+  if (!token) {
+    return res.status(401).json({
+      status: 'error',
+      message: 'Access Token is required',
+    })
+  }
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
-        next();
-    } catch (error) {
-        return res.status(403).json({ message: "Access Token 유효하지 않음" });
-    }
-};
-
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    req.user = decoded
+    next()
+  } catch (error) {
+    return res.status(403).json({
+      status: 'error',
+      message: 'Invalid Access Token',
+    })
+  }
+}
 
 const validateRefreshToken = (req, res, next) => {
-    try {
-        const refreshToken = req.cookies.refreshToken;
-
-        if (!refreshToken) {
-            return res.status(401).json({ message: "Refresh Token이 없습니다." });
-        }
-
-        jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, decoded) => {
-            if (err) {
-                return res.status(403).json({ message: "유효하지 않은 Refresh Token입니다. 다시 로그인 해주세요" });
-            }
-            req.userId = decoded;
-        });
-        
-        next();
-    } catch (error) {
-        console.error("토큰 검증 중 오류 발생:", error);
-        return res.status(500).json({ message: "서버 오류 발생" });
+  try {
+    const refreshToken = req.cookies.refreshToken
+    if (!refreshToken) {
+      return res.status(401).json({
+        status: 'error',
+        message: 'Refresh Token is required. Please login again.',
+      })
     }
-};
 
-module.exports = { validateAccessToken, validateRefreshToken, validateRequestBody, validateTypes };
+    jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, decoded) => {
+      if (err) {
+        return res.status(403).json({
+          status: 'error',
+          message: 'Invalid Refresh Token. Please login again.',
+        })
+      }
+      req.userId = binaryToUUID(decoded.id)
+      next()
+    })
+  } catch (error) {
+    return res.status(500).json({
+      status: 'error',
+      message: 'Server error during token validation',
+    })
+  }
+}
+
+module.exports = {
+  validateAccessToken,
+  validateRefreshToken,
+  validateJoin,
+  validateLogin,
+  validateRefresh,
+}

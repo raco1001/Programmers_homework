@@ -1,6 +1,6 @@
-const { parse } = require('uuid');
+const { parse } = require('uuid')
 const toBinaryUUID = (uuid) => {
-    return Buffer.from(parse(uuid)); 
-};
+  return Buffer.from(parse(uuid))
+}
 
-module.exports = { toBinaryUUID };
+module.exports = { toBinaryUUID }

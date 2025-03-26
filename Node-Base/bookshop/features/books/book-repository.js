@@ -1,16 +1,15 @@
-const pool = require('../../app/database/mariadb');
-const {binaryToUuid} = require("../../shared/utils/uuidToBinary");
+const pool = require('../../app/database/mariadb')
+const { binaryToUuid } = require('../../shared/utils/convertIds')
 
 const findBooks = async (query, params) => {
-   const [rows] = await pool.query(query, params);
-   console.log(rows);
-   return rows.length ? rows : [];
-};
+  const [rows] = await pool.query(query, params)
+  console.log(rows)
+  return rows.length ? rows : []
+}
 
 const findBookDetail = async (bookId) => {
-
-   const [ result ] = await pool.query(
-      `SELECT
+  const [result] = await pool.query(
+    `SELECT
                id
                ,category_id
                ,title
@@ -22,18 +21,18 @@ const findBookDetail = async (bookId) => {
                ,table_of_contens
                ,publication_date
             FROM books  
-            WHERE id = ?`
-            , [bookId]);
+            WHERE id = ?`,
+    [bookId],
+  )
 
-   const bookDetail = result[0];
+  const bookDetail = result[0]
 
-   
-   console.log(bookDetail);
+  console.log(bookDetail)
 
-   if (!bookDetail) return [0,0];
+  if (!bookDetail) return [0, 0]
 
-   const [categoryPath, info] = await pool.query(
-      `WITH RECURSIVE CategoryPath AS (
+  const [categoryPath, info] = await pool.query(
+    `WITH RECURSIVE CategoryPath AS (
                SELECT id, parent_id, name
                FROM categories
                WHERE id = ?
@@ -47,12 +46,11 @@ const findBookDetail = async (bookId) => {
 
             SELECT name
             FROM CategoryPath
-            ORDER BY id ASC;`
-      ,[bookDetail.category_id]
-   );
+            ORDER BY id ASC;`,
+    [bookDetail.category_id],
+  )
 
+  return [bookDetail, categoryPath]
+}
 
-    return [bookDetail, categoryPath];
-};
-
-module.exports = {findBooks, findBookDetail};
+module.exports = { findBooks, findBookDetail }

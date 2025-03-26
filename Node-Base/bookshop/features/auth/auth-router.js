@@ -1,36 +1,24 @@
-const express = require("express");
-const router = express.Router();
-const authMiddleware = require("./auth-middleware");
-const authController = require("./auth-controller");
-const joinFields = ["name","email","password"];
-const joinType = {name: "string", email: "string", password: "string"};
-const loginFields = ["email", "password"];
-const loginType = {email: "string", password: "string"};
+const express = require('express')
+const router = express.Router()
+const {
+  validateAccessToken,
+  validateRefreshToken,
+  validateJoin,
+  validateLogin,
+} = require('./auth-middleware')
+const {
+  register,
+  login,
+  updateRefreshToken,
+  logout,
+} = require('./auth-controller')
 
+router.post('/join', validateJoin(), register)
 
-router
-   .post(
-      "/join", 
-      authMiddleware.validateRequestBody(joinFields), 
-      authMiddleware.validateTypes(joinType), 
-      authController.register);
+router.post('/login', validateLogin(), login)
 
-router
-   .post(
-      "/login", 
-      authMiddleware.validateRequestBody(loginFields),
-      authMiddleware.validateTypes(loginType), 
-      authController.login);
+router.post('/refresh', validateRefreshToken, updateRefreshToken)
 
-router
-   .post(
-      "/refresh", 
-      authMiddleware.validateRefreshToken,authController.updateRefreshToken);
+router.post('/logout', validateAccessToken, logout)
 
-router
-   .post(
-      "/logout", 
-      authController.logout);
-
-
-module.exports = router;
+module.exports = router

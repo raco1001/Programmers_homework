@@ -1,61 +1,69 @@
-const { findUserByEmail, createUser, storeRefreshToken, getStoredRefreshToken } = require("./auth-repository");
-const { hashPassword, verifyPassword, generateTokens} = require("./auth-utils");
-const { generatePK } = require("../../shared/utils/generatePK");
-const { binaryToUUID, uuidToBinary } = require("../../shared/utils/uuidToBinary");
-const uuidUtil = require("../../shared/utils/uuidToBinary");
+const {
+  findUserByEmail,
+  createUser,
+  storeRefreshToken,
+  getStoredRefreshToken,
+} = require('./auth-repository')
+const { hashPassword, verifyPassword, generateTokens } = require('./auth-utils')
+const { generateUUID } = require('../../shared/utils/generateUUID')
+const { binaryToUUID, uuidToBinary } = require('../../shared/utils/convertIds')
 
 const registerUser = async (name, email, password) => {
+  console.log(
+    `[registerUser] 요청 받음!!!!!!!!!!!: ${name}, ${email}, ${password}`,
+  )
+  const existingUser = await findUserByEmail(email)
+  console.log(existingUser)
+  if (existingUser !== null) {
+    throw new Error('Email already exists.')
+  }
 
-    const existingUser = await findUserByEmail(email);
+  const { salt, hashedPassword } = hashPassword(password)
+  const { uid } = generateUUID()
+  const { bid } = uuidToBinary(uid)
 
-    if (existingUser !== null) {
-        throw new Error("이미 가입된 이메일입니다.");
-    }
-
-    const { salt, hashedPassword } = hashPassword(password);
-
-    const { binaryId } = generatePK();
-
-    const affectedRows = await createUser(binaryId, name, email, hashedPassword, salt);
-
-    if(affectedRows !== 1){
-        throw new Error("이미 가입된 이메일입니다.");
-    }
-    
-    return affectedRows;
-};
-
+  const affectedRows = await createUser(bid, name, email, hashedPassword, salt)
+  console.log(`[registerUser] 영향받은 행 수: ${affectedRows}`)
+  return affectedRows
+}
 
 const authenticateUser = async (email, password) => {
-    const user = await findUserByEmail(email);
-    if (!user || !verifyPassword(password, user.salt, user.password)) {
-        throw new Error("이메일 또는 비밀번호가 일치하지 않습니다.");
-    }
-    const userId = uuidUtil.binaryToUUID(user.id);
-    const userName = user.name;
-    const { accessToken, refreshToken } = generateTokens(user);
+  const user = await findUserByEmail(email)
+  if (!user || !verifyPassword(password, user.salt, user.password)) {
+    throw new Error('Invalid email or password.')
+  }
+  console.log(user.id)
+  const userId = binaryToUUID(user.id)
+  console.log(userId)
 
-    await storeRefreshToken(user.id, refreshToken);
+  const userName = user.name
+  const userEmail = user.email
+  console.log(userId, userName, userEmail)
+  const { accessToken, refreshToken } = generateTokens(
+    userId,
+    userName,
+    userEmail,
+  )
 
-    return { userId, userName,  accessToken, refreshToken };
-};
+  await storeRefreshToken(user.id, refreshToken)
 
+  return { userId, userName, accessToken, refreshToken }
+}
 
 const refreshToken = async (userId, userRefreshToken) => {
-    if (!userRefreshToken) throw new Error("Refresh Token이 없습니다.");
+  if (!userRefreshToken) throw new Error('Empty: Refresh Token')
 
-    const userBId = uuidToBinary(userId);
-    const refreshAuthResult= await getStoredRefreshToken(userBId);
-    const email = refreshAuthResult.email;
-    const storedToken = refreshAuthResult.refresh_token;
-    const name = refreshAuthResult.name;
-        
+  const userBId = uuidToBinary(userId)
+  const refreshAuthResult = await getStoredRefreshToken(userBId)
+  const email = refreshAuthResult.email
+  const storedToken = refreshAuthResult.refresh_token
+  const name = refreshAuthResult.name
 
-    if (!storedToken || storedToken !== userRefreshToken) {
-        throw new Error("유효하지 않은 Refresh Token입니다. 다시 로그인 해주세요!");
-    }
+  if (!storedToken || storedToken !== userRefreshToken) {
+    throw new Error('Invalid Refresh Token. Please login again!')
+  }
 
-    return generateAccessToken({ id: userId, email, name});
-};
+  return generateAccessToken({ id: userId, email, name })
+}
 
-module.exports = { registerUser, authenticateUser, refreshToken };
+module.exports = { registerUser, authenticateUser, refreshToken }

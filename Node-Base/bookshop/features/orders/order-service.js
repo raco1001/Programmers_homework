@@ -1,7 +1,6 @@
-const orderRepo = require('./order-repository');
-const { uuidToBinary, binaryToUUID } = require('../../shared/utils/uuidToBinary'); 
-const db = require('../../app/database/mariadb');
-
+const orderRepo = require('./order-repository')
+const { uuidToBinary, binaryToUUID } = require('../../shared/utils/convertIds')
+const db = require('../../app/database/mariadb')
 
 // const createOrder = (userId, cartItems, addressId, paymentInfo) => {
 //     const uid = toBinaryUUID(userId);
@@ -40,24 +39,21 @@ const db = require('../../app/database/mariadb');
 //         });
 // };
 
-
-
 const modifyOrderItem = async (userId, productId) => {
-   const uid = uuidToBinary(userId);
-   const pid = uuidToBinary(productId);
-   return await orderRepo.updateOrderItem(uid, pid);
-};
-
+  const uid = uuidToBinary(userId)
+  const pid = uuidToBinary(productId)
+  return await orderRepo.updateOrderItem(uid, pid)
+}
 
 const removeOrderItem = async (userId, productId) => {
-    const uid = uuidToBinary(userId);
-    const pid = uuidToBinary(productId);
-    return await orderRepo.deleteOrderItem(uid, pid);
-};
+  const uid = uuidToBinary(userId)
+  const pid = uuidToBinary(productId)
+  return await orderRepo.deleteOrderItem(uid, pid)
+}
 
 const getOrderItemsByUser = async (userId, pageSize, pageNumber) => {
-    const uid = uuidToBinary(userId);
-    return await orderRepo.findOrderItemsByUser(uid, pageSize, pageNumber);
-};
+  const uid = uuidToBinary(userId)
+  return await orderRepo.findOrderItemsByUser(uid, pageSize, pageNumber)
+}
 
-module.exports = {  removeOrderItem, getOrderItemsByUser, modifyOrderItem };
+module.exports = { removeOrderItem, getOrderItemsByUser, modifyOrderItem }
