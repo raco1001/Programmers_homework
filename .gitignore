@@ -1,4 +1,11 @@
-Node-Base/youtube-demo/.env
-Node-Base/bookshop/.env
-Node-Base/node_modules
-Node-Base/node_modules/*
+backend/youtube-demo/.env
+backend/bookshop/.env
+backend/node_modules
+backend/node_modules/*
+frontend/prg_vanilla_basic/node_modules
+frontend/prg_vanilla_basic/node_modules/*
+frontend/prg_react_typescript/node_modules
+frontend/prg_react_typescript/node_modules/*
+frontend/prms-js/node_modules
+frontend/prms-js/node_modules/*
+.vscode
