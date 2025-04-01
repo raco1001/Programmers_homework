@@ -6,14 +6,7 @@ const {
   validateJoin,
   validateLogin,
 } = require('./auth-middleware')
-const {
-  register,
-  login,
-  updateRefreshToken,
-  logout,
-} = require('./auth-controller')
-
-router.post('/join', validateJoin(), register)
+const { login, updateRefreshToken, logout } = require('./auth-controller')
 
 router.post('/login', validateLogin(), login)
 

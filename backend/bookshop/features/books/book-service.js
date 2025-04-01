@@ -11,31 +11,37 @@ const getBooks = async ({ category, startDate, endDate, page, limit }) => {
 
   console.log('final category: ' + finalCategory)
   const query = `SELECT 
-                     HEX(b.id) as id
-                     ,b.title
-                     ,b.author
-                     ,b.summary
-                     ,a.likes
-                     ,a.price
-                     ,a.img_path
-                  FROM 
-                     (
-                        SELECT 
-                           id
-                           ,likes
-                           ,price
-                           ,img_path
-                        FROM
-                           products
-                        WHERE product_table_name = 'books'
-                        ${finalCategory} 
-                     ) a 
-                  JOIN  (  SELECT id, title, author, summary 
-                           FROM books
-                           ${range}
-                        ) b 
-                  ON a.id = b.id
-                  LIMIT ${limit} OFFSET ${(page - 1) * limit}`
+              LOWER(CONCAT_WS('-',
+                  SUBSTR(HEX(b.id), 1, 8),
+                  SUBSTR(HEX(b.id), 9, 4),
+                  SUBSTR(HEX(b.id), 13, 4),
+                  SUBSTR(HEX(b.id), 17, 4),
+                  SUBSTR(HEX(b.id), 21)
+              )) AS id
+              ,b.title
+              ,b.author
+              ,b.summary
+              ,a.likes
+              ,a.price
+              ,a.img_path
+            FROM 
+              (
+                SELECT 
+                  id
+                  ,likes
+                  ,price
+                  ,img_path
+                FROM
+                  products
+                WHERE product_table_name = 'books'
+                ${finalCategory} 
+              ) a 
+            JOIN  (  SELECT id, title, author, summary 
+                  FROM books
+                  ${range}
+                ) b 
+            ON a.id = b.id
+            LIMIT ${limit} OFFSET ${(page - 1) * limit}`
   const rows = await findBooks(query, params)
   console.log(rows)
   return rows

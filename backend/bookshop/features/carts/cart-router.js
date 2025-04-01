@@ -8,12 +8,10 @@ const {
 } = require('./cart-controller')
 
 router
-  .route('/')
+  .route('/:userId')
   .get(getCartItems)
   .post(addToCart)
   .put(updateCartItem)
   .delete(deleteFromCart)
-
-router.route('/:userId').get(getCartItems)
 
 module.exports = router

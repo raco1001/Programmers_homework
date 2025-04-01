@@ -1,25 +1,25 @@
-const pool = require('../../app/database/mariadb')
+const db = require('../../app/database/mariadb')
 const { binaryToUuid } = require('../../shared/utils/convertIds')
 
 const findBooks = async (query, params) => {
-  const [rows] = await pool.query(query, params)
+  const [rows] = await db.query(query, params)
   console.log(rows)
   return rows.length ? rows : []
 }
 
 const findBookDetail = async (bookId) => {
-  const [result] = await pool.query(
+  const [result] = await db.query(
     `SELECT
-               id
-               ,category_id
-               ,title
-               ,format
-               ,author
-               ,isbn
-               ,pages
-               ,description
-               ,table_of_contens
-               ,publication_date
+              id
+              ,category_id
+              ,title
+              ,format
+              ,author
+              ,isbn
+              ,pages
+              ,description
+              ,table_of_contens
+              ,publication_date
             FROM books  
             WHERE id = ?`,
     [bookId],
@@ -31,17 +31,17 @@ const findBookDetail = async (bookId) => {
 
   if (!bookDetail) return [0, 0]
 
-  const [categoryPath, info] = await pool.query(
+  const [categoryPath, info] = await db.query(
     `WITH RECURSIVE CategoryPath AS (
-               SELECT id, parent_id, name
-               FROM categories
-               WHERE id = ?
+              SELECT id, parent_id, name
+              FROM categories
+              WHERE id = ?
 
-               UNION ALL
-               
-               SELECT c.id, c.parent_id, c.name
-               FROM categories c
-               JOIN CategoryPath cp ON c.id = cp.parent_id
+              UNION ALL
+              
+              SELECT c.id, c.parent_id, c.name
+              FROM categories c
+              JOIN CategoryPath cp ON c.id = cp.parent_id
             )
 
             SELECT name

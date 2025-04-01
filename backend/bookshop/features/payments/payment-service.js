@@ -4,7 +4,7 @@ const {
   insertInternalPayment,
   insertPGPayment,
 } = require('./payment-repository')
-const { generatePK } = require('../../shared/utils/generateUUID')
+const { generateUUID } = require('../../shared/utils/generateUUID')
 const { uuidToBinary } = require('../../shared/utils/convertIds')
 const { generateTransactionId } = require('./utils/generate-transaction-id')
 const { insertOrder, insertOrderItems } = require('../orders/order-repository')
@@ -33,7 +33,7 @@ const processPayment = async (paymentInfos) => {
 
     const { userId, providerId, addressId, paymentMethod, paymentType, data } =
       paymentInfos
-    const paymentBid = generatePK().binaryId
+    const paymentBid = uuidToBinary(generateUUID())
     const userBid = uuidToBinary(userId)
     const providerBid = uuidToBinary(providerId)
     const addressBid = uuidToBinary(addressId)
@@ -51,7 +51,7 @@ const processPayment = async (paymentInfos) => {
       amount: amount,
       receipt: receipt,
     }
-    console.log(paymentInfo)
+
     if (paymentType === 'internal') {
       await insertInternalPayment(paymentInfo)
     } else if (paymentType === 'pg') {
@@ -68,7 +68,7 @@ const processPayment = async (paymentInfos) => {
     )
 
     const orderItemInfo = data.map((val) => ({
-      orderItemBid: generatePK().binaryId,
+      orderItemBid: uuidToBinary(generateUUID()),
       orderBid,
       productBid: uuidToBinary(val.productId),
       price: val.price,

@@ -1,22 +1,7 @@
 const jwt = require('jsonwebtoken')
 const { binaryToUUID } = require('../../shared/utils/convertIds')
 const { requestTypes } = require('./auth-entities')
-
-const validateSchema = (schema) => {
-  return (req, res, next) => {
-    const { error } = schema.validate(req.body, { abortEarly: false })
-
-    if (error) {
-      const errors = error.details.map((detail) => detail.message)
-      return res.status(400).json({
-        status: 'error',
-        message: 'Validation failed',
-        errors,
-      })
-    }
-    next()
-  }
-}
+const validateSchema = require('../../shared/middlewares/validateSchema')
 
 const validateJoin = () => {
   return validateSchema(requestTypes.join)

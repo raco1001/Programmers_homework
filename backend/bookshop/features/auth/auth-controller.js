@@ -1,26 +1,8 @@
-const {
-  registerUser,
-  authenticateUser,
-  refreshToken,
-} = require('./auth-service')
-
-const register = async (req, res, next) => {
-  console.log(`[register] 요청 받음: ${JSON.stringify(req.body)}`)
-  try {
-    const { name, email, password } = req.body
-    const result = await registerUser(name, email, password)
-    if (result === 1) {
-      res
-        .status(201)
-        .json({ status: 'success', message: `${name}님 가입을 환영합니다!` })
-    }
-  } catch (error) {
-    next(error)
-  }
-}
+const { authenticateUser, refreshToken } = require('./auth-service')
 
 const login = async (req, res, next) => {
   try {
+    console.log(req.body)
     const { email, password } = req.body
     const { userId, userName, accessToken, refreshToken } =
       await authenticateUser(email, password)
@@ -61,4 +43,4 @@ const logout = async (req, res) => {
   res.status(200).json({ status: 'success', message: '로그아웃 완료' })
 }
 
-module.exports = { register, login, updateRefreshToken, logout }
+module.exports = { login, updateRefreshToken, logout }

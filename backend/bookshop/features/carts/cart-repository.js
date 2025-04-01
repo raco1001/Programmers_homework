@@ -1,21 +1,21 @@
 const db = require('../../app/database/mariadb')
 
-const insertCartItem = async (userId, productId, quantity) => {
+const insertCartItem = async (userId, productId, count) => {
   const query = `
         INSERT INTO carts (user_id, product_id, count)
-        VALUES (user_uuid_bin, product_uuid_bin, ?)
+        VALUES (?, ?, ?)
         ON DUPLICATE KEY UPDATE count = count + ? , updated_at = NOW()
     `
-  await db.query(query, [userId, productId, quantity, quantity])
+  await db.query(query, [userId, productId, count, count])
 }
 
-const updateCartItem = async (userId, productId, quantity) => {
+const updateCartItem = async (userId, productId, count) => {
   const query = `
-       UPDATE carts ( quantity, updated_at)
-       SET quantity = ?, updated_at = NOW()
-       WHERE user_id = ? AND product_id = ?
-   `
-  await db.query(query, [quantity, userId, productId])
+      UPDATE carts
+      SET count = ?, updated_at = NOW()
+      WHERE user_id = ? AND product_id = ?
+    `
+  await db.query(query, [count, userId, productId])
 }
 
 const deleteCartItems = async (userId, productId) => {
@@ -62,7 +62,7 @@ const deleteCartItem = async (cartItemBids) => {
 
 module.exports = {
   insertCartItem,
-  deleteCartItems,
+  deleteCartItem,
   findCartItemsByUser,
   updateCartItem,
 }

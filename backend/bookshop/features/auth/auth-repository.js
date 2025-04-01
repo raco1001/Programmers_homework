@@ -6,35 +6,20 @@ const findUserByEmail = async (email) => {
       'SELECT id, name, email, password, salt FROM users WHERE email = ?',
       [email],
     )
-    console.log(rows[0])
-    return rows[0]
+    return rows
   } catch (error) {
     console.error(`[findUserByEmail] 오류 발생: ${error.message}`)
     throw error
   }
 }
 
-const createUser = async (id, name, email, password, salt) => {
-  try {
-    console.log(`유저 생성 중: ${id}, ${name}, ${email}, ${password}, ${salt}`)
-    const result = await db.query(
-      'INSERT INTO users (id, name, email, password, salt) VALUES (?, ?, ?, ?, ?)',
-      [id, name, email, password, salt],
-    )
-    const affectedRows = result[0].affectedRows
-    console.log(`${affectedRows}`)
-    return affectedRows
-  } catch (error) {
-    throw error
-  }
-}
-
 const storeRefreshToken = async (userId, refreshToken) => {
   try {
-    await db.query('UPDATE users SET refresh_token = ? WHERE id = ?', [
-      refreshToken,
-      userId,
-    ])
+    const result = await db.query(
+      'UPDATE users SET refresh_token = ? WHERE id = ?',
+      [refreshToken, userId],
+    )
+    return result
   } catch (error) {
     throw error
   }
@@ -64,7 +49,6 @@ const deleteRefreshToken = async (userId) => {
 
 module.exports = {
   findUserByEmail,
-  createUser,
   storeRefreshToken,
   getStoredRefreshToken,
 }
