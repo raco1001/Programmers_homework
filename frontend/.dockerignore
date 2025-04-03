@@ -1,1 +1,7 @@
-pr*/node_modules
+prg_typescript/node_modules
+prg_typescript/dist
+prg_typescript/build
+prg_typescript/coverage
+prg_typescript/dist
+prg_typescript/dist
+prg_typescript/dist
