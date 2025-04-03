@@ -7,8 +7,8 @@ const {
 const { uuidToBinary, binaryToUUID } = require('../../shared/utils/convertIds')
 
 const getCartItemsByUserId = async (userId) => {
-  const uid = uuidToBinary(userId)
-  const cartItems = await findCartItemsByUser(uid)
+  const userBid = uuidToBinary(userId)
+  const cartItems = await findCartItemsByUser(userBid)
   const transformed = cartItems.map((item) => ({
     ...item,
     userId: binaryToUUID(item.userId),
@@ -18,22 +18,22 @@ const getCartItemsByUserId = async (userId) => {
 }
 
 const addCartItem = async (userId, productId, count) => {
-  const uid = uuidToBinary(userId)
-  const pid = uuidToBinary(productId)
-  return await insertCartItem(uid, pid, count)
+  const userBid = uuidToBinary(userId)
+  const productBid = uuidToBinary(productId)
+  return await insertCartItem(userBid, productBid, count)
 }
 
 const modifyCartItem = async (userId, productId) => {
-  const uid = uuidToBinary(userId)
-  const pid = uuidToBinary(productId)
-  return await updateCartItem(uid, pid)
+  const userBid = uuidToBinary(userId)
+  const productBid = uuidToBinary(productId)
+  return await updateCartItem(userBid, productBid)
 }
 
 const removeCartItem = async (userId, productId) => {
-  const uid = uuidToBinary(userId)
-  const pid = uuidToBinary(productId)
+  const userBid = uuidToBinary(userId)
+  const productBid = uuidToBinary(productId)
 
-  return await deleteCartItem(uid, pid)
+  return await deleteCartItem(userBid, productBid)
 }
 
 module.exports = {

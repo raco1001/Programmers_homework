@@ -1,15 +1,25 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
-
-void function(int *pArray){
-  for(int i = 0; i < 5; i++){
-    printf("함수 내부의 배열의 요소 pArray[%d]: %d\n", i, *(pArray + i));
-  }
-}
 
 int main() {
-  int array[] = {1,2,3,4,5};
-  function(array);
+  int num;
+  int *student;
+
+  printf("학생 수를 입력하세요: ");
+  scanf("%d", &num);
+
+  student = (int*)malloc(sizeof(int) * num);
+
+  if(student == NULL){
+    printf("메모리가 할당되지 않았습니다.\n");
+    return 0;
+  }
+
+  printf("할당된 메모리의 크기는 %lu바이트입니다.\n", sizeof(int)*num);
+
+  free(student);
   return 0;
 }
 

@@ -1,19 +1,19 @@
-const { getLikes, createLike, deleteLikeIfExists } = require('./like-service')
+const { getLike, createLike, deleteLikeIfExists } = require('./like-service')
 
 const addLike = async (req, res, next) => {
   try {
     const userId = req.params.userId
-    const bookId = req.body.bookId
-
-    const likeUser = await getLikes(userId, bookId)
-
+    const productId = req.body.productId
+    console.log(userId, productId)
+    const likeUser = await getLike(userId, productId)
+    console.log(likeUser)
     if (likeUser === 1) {
       return res
         .status(400)
         .json({ status: 'error', message: '이미 좋아요를 눌렀습니다.' })
     }
 
-    const result = createLike(userId, bookId)
+    const result = createLike(userId, productId)
 
     if (result === 0) {
       return res
@@ -21,7 +21,9 @@ const addLike = async (req, res, next) => {
         .json({ status: 'error', message: '좋아요를 누를 수 없습니다.' })
     }
 
-    res.status(200).json({ status: 'success', data: result })
+    res
+      .status(200)
+      .json({ status: 'success', data: { message: '좋아요 추가' } })
   } catch (error) {
     next(error)
   }
@@ -30,15 +32,16 @@ const addLike = async (req, res, next) => {
 const removeLike = async (req, res, next) => {
   try {
     const userId = req.params.userId
-    const bookId = req.body.bookId
+    const productId = req.body.productId
 
-    if (!bookId || !userId) {
+    if (!productId || !userId) {
       return res
         .status(400)
         .json({ status: 'error', message: 'parameters required.' })
     }
-
-    const result = await deleteLikeIfExists(userId, bookId)
+    const userBid = uuidToBinary(userId)
+    const productBid = uuidToBinary(productId)
+    const result = await deleteLikeIfExists(userBid, productBid)
 
     if (result === 0) {
       return res

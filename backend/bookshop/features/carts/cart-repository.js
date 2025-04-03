@@ -51,13 +51,12 @@ const findCartItemsByUser = async (userId) => {
   return rows
 }
 
-const deleteCartItem = async (cartItemBids) => {
-  if (cartItemBids.length === 0) return // 방어 코드
+const deleteCartItem = async (userId, productId) => {
+  if (!userId || !productId) return 0
 
-  const placeholders = cartItemBids.map(() => '?').join(', ')
-  const query = `DELETE FROM carts WHERE id IN (${placeholders})`
+  const query = `DELETE FROM carts WHERE user_id = ? AND product_id = ?`
 
-  await db.query(query, cartItemBids)
+  await db.query(query, [userId, productId])
 }
 
 module.exports = {

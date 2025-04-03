@@ -1,0 +1,15 @@
+/home/orca/devs/study/programmers/frontend/prg_c_basic/programmers/bin/Debug/net9.0/programmers
+/home/orca/devs/study/programmers/frontend/prg_c_basic/programmers/bin/Debug/net9.0/programmers.deps.json
+/home/orca/devs/study/programmers/frontend/prg_c_basic/programmers/bin/Debug/net9.0/programmers.runtimeconfig.json
+/home/orca/devs/study/programmers/frontend/prg_c_basic/programmers/bin/Debug/net9.0/programmers.dll
+/home/orca/devs/study/programmers/frontend/prg_c_basic/programmers/bin/Debug/net9.0/programmers.pdb
+/home/orca/devs/study/programmers/frontend/prg_c_basic/programmers/obj/Debug/net9.0/programmers.GeneratedMSBuildEditorConfig.editorconfig
+/home/orca/devs/study/programmers/frontend/prg_c_basic/programmers/obj/Debug/net9.0/programmers.AssemblyInfoInputs.cache
+/home/orca/devs/study/programmers/frontend/prg_c_basic/programmers/obj/Debug/net9.0/programmers.AssemblyInfo.cs
+/home/orca/devs/study/programmers/frontend/prg_c_basic/programmers/obj/Debug/net9.0/programmers.csproj.CoreCompileInputs.cache
+/home/orca/devs/study/programmers/frontend/prg_c_basic/programmers/obj/Debug/net9.0/programmers.sourcelink.json
+/home/orca/devs/study/programmers/frontend/prg_c_basic/programmers/obj/Debug/net9.0/programmers.dll
+/home/orca/devs/study/programmers/frontend/prg_c_basic/programmers/obj/Debug/net9.0/refint/programmers.dll
+/home/orca/devs/study/programmers/frontend/prg_c_basic/programmers/obj/Debug/net9.0/programmers.pdb
+/home/orca/devs/study/programmers/frontend/prg_c_basic/programmers/obj/Debug/net9.0/programmers.genruntimeconfig.cache
+/home/orca/devs/study/programmers/frontend/prg_c_basic/programmers/obj/Debug/net9.0/ref/programmers.dll

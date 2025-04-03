@@ -1,7 +1,11 @@
 const express = require('express')
 const router = express.Router()
 const { addLike, removeLike } = require('./like-controller')
+const { validateAccessToken } = require('./../auth/auth-middleware')
 
-router.route('/likes/:userId').post(addLike).delete(removeLike)
+router
+  .route('/:userId')
+  .post(validateAccessToken, addLike)
+  .delete(validateAccessToken, removeLike)
 
 module.exports = router

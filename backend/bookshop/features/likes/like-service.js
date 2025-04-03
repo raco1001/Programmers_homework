@@ -1,7 +1,12 @@
 const { findLikes, insertLike, deleteLike } = require('./like-repository')
-
-getLike = async (userId, bookId) => {
-  const likeUser = await findLikes(userId, bookId)
+const {
+  uuidToBinary,
+  binaryToUUID,
+} = require('./../../shared/utils/convertIds')
+getLike = async (userId, productId) => {
+  const userBid = uuidToBinary(userId)
+  const productBid = uuidToBinary(productId)
+  const likeUser = await findLikes(userBid, productBid)
 
   if (likeUser) {
     return 1
@@ -10,19 +15,21 @@ getLike = async (userId, bookId) => {
   }
 }
 
-createLike = async (userId, bookId) => {
-  const result = await insertLike(userId, bookId)
+createLike = async (userId, productId) => {
+  const userBid = uuidToBinary(userId)
+  const productBid = uuidToBinary(productId)
+  const result = await insertLike(userBid, productBid)
 
   return result
 }
 
 deleteLikeIfExists = async (userId) => {
-  const exists = await findLikes(userId, bookId)
+  const exists = await findLikes(userId, productId)
   if (exists) {
     return 0
   }
 
-  const result = await deleteLike(userId, bookId)
+  const result = await deleteLike(userId, productId)
 
   return result
 }
