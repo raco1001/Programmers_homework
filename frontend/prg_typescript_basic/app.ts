@@ -23,10 +23,7 @@ let std = {
   grade: 'A',
 }
 
-enum Gender {
-  Male = 'Male',
-  Female = 'Female',
-}
+type Gender = 'Male' | 'Female'
 
 interface Student {
   stdId?: number
@@ -52,7 +49,7 @@ class MyStudent implements Student {
     this.stdId = 32469
     this.stdName = 'Clerk'
     this.age = 45
-    this.gender = Gender.Male
+    this.gender = 'Male'
     this.course = 'Typescript'
     this.grade = 'A'
   }
@@ -86,3 +83,98 @@ console.log(myInstance.gender)
 // }
 
 // setInfo(std)
+
+const user: {
+  name: string
+  age: number
+  gender: 'Male' | 'Female'
+} = {
+  name: 'John',
+  age: 20,
+  gender: 'Male',
+}
+
+const user2: {
+  name: string
+  age: number
+  gender: 'Male' | 'Female'
+} = {
+  name: 'John',
+  age: 20,
+  gender: 'Male',
+}
+
+let anyVal: number | string = 100
+anyVal = 200
+anyVal = 'Hello'
+
+type numOrStr = number | string
+let numStr: numOrStr = '100'
+let item: number
+
+function convertToNumber(value: numOrStr): number {
+  if (typeof value === 'number') {
+    item = value
+  } else {
+    item = 0
+  }
+  return item
+}
+
+function convertToString(value: numOrStr): string {
+  return String(value)
+}
+
+console.log(convertToString(100))
+console.log(convertToString('Hello'))
+
+console.log(convertToNumber(100))
+console.log(convertToNumber('Hello'))
+
+let numbers: number[] = [1, 2, 3, 4, 5]
+
+let fruits: string[] = ['Apple', 'Banana', 'Cherry']
+
+for (let i = 0; i < numbers.length; i++) {
+  console.log(numbers[i])
+}
+
+for (let i = 0; i < fruits.length; i++) {
+  console.log(fruits[i])
+}
+
+let arr: (number | string)[] = [1, 'Hello']
+
+for (let i = 0; i < arr.length; i++) {
+  console.log(arr[i])
+}
+
+let infer = [1, 2, 3] // 타입 추론
+for (let i = 0; i < infer.length; i++) {
+  console.log(infer[i])
+}
+
+let readOnly: ReadonlyArray<number> = [1, 2, 3]
+
+for (let i = 0; i < readOnly.length; i++) {
+  console.log(readOnly[i])
+}
+
+let greeting: [number, string, boolean] = [1, 'Hello', true]
+
+for (let i = 0; i < greeting.length; i++) {
+  console.log(greeting[i])
+}
+
+let [num, str, bool] = greeting
+
+// Spread Operator
+let arr1 = [1, 2, 3]
+let arr2 = [4, 5, 6]
+let combineArr = [...arr1, ...arr2]
+
+console.log(combineArr)
+
+for (let i = 0; i < combineArr.length; i++) {
+  console.log(combineArr[i])
+}
