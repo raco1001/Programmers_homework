@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ebb7b7cd-0dee-11f0-910e-c277ba14597b",
+    "title": "The Great Adventure",
+    "author": "John Doe",
+    "summary": "A thrilling journey of discovery.",
+    "likes": 10,
+    "price": 20000,
+    "img_path": "fiction_cover.jpg"
+  },
+  {
+    "id": "ebb7d619-0dee-11f0-910e-c277ba14597b",
+    "title": "The Last Sorcerer",
+    "author": "Emily Carter",
+    "summary": "A magical tale of an ancient legend.",
+    "likes": 12,
+    "price": 22000,
+    "img_path": "fiction_cover2.jpg"
+  },
+  {
+    "id": "ebb7d7e7-0dee-11f0-910e-c277ba14597b",
+    "title": "The History of the World",
+    "author": "Jane Smith",
+    "summary": "An insightful look into world history.",
+    "likes": 5,
+    "price": 25000,
+    "img_path": "nonfiction_cover.jpg"
+  },
+  {
+    "id": "ebb7db87-0dee-11f0-910e-c277ba14597b",
+    "title": "The Science of Everything",
+    "author": "Dr. Alan White",
+    "summary": "Exploring the wonders of science and technology.",
+    "likes": 7,
+    "price": 27000,
+    "img_path": "nonfiction_cover2.jpg"
+  },
+  {
+    "id": "ebb7dbd8-0dee-11f0-910e-c277ba14597b",
+    "title": "Modern Biographies",
+    "author": "Samantha Green",
+    "summary": "Stories of famous figures from various fields.",
+    "likes": 15,
+    "price": 20000,
+    "img_path": "biography_cover.jpg"
+  },
+  {
+    "id": "ebb7dc0d-0dee-11f0-910e-c277ba14597b",
+    "title": "The Psychology of Success",
+    "author": "Mark Jefferson",
+    "summary": "How to train your mind for success and happiness.",
+    "likes": 8,
+    "price": 18000,
+    "img_path": "biography_cover2.jpg"
+  },
+  {
+    "id": "ebb7dc33-0dee-11f0-910e-c277ba14597b",
+    "title": "The Lost Civilization",
+    "author": "David Richardson",
+    "summary": "A journey into the mysteries of ancient worlds.",
+    "likes": 14,
+    "price": 21000,
+    "img_path": "science_cover.jpg"
+  },
+  {
+    "id": "ebb7dc98-0dee-11f0-910e-c277ba14597b",
+    "title": "Understanding Artificial Intelligence",
+    "author": "Lily Anderson",
+    "summary": "A complete guide to AI and machine learning.",
+    "likes": 20,
+    "price": 26000,
+    "img_path": "history_cover.jpg"
+  },
+  {
+    "id": "ebb7dd57-0dee-11f0-910e-c277ba14597b",
+    "title": "The Shadow Kingdom",
+    "author": "George Hill",
+    "summary": "An epic fantasy adventure.",
+    "likes": 30,
+    "price": 23000,
+    "img_path": "fantasy_cover.jpg"
+  },
+  {
+    "id": "ebb7ddba-0dee-11f0-910e-c277ba14597b",
+    "title": "Legends of the Ancient World",
+    "author": "Chris Nolan",
+    "summary": "A collection of fascinating myths and legends.",
+    "likes": 25,
+    "price": 24000,
+    "img_path": "fantasy_cover2.jpg"
+  }
+]
