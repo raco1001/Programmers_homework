@@ -21,17 +21,19 @@
     "faker": "^5.5.3",
     "http-errors": "~1.6.3",
     "http-status-codes": "^2.3.0",
+    "ioredis": "^5.6.0",
     "jade": "^0.29.0",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "mariadb": "^3.4.0",
     "morgan": "~1.9.1",
     "mysql2": "^3.12.0",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.6.0",
     "swagger-jsdoc": "^6.2.8",
-    "widdershins": "^4.0.1"
+    "widdershins": "^3.6.7"
   }
 }

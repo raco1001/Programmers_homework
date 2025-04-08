@@ -1,4 +1,5 @@
 import './App.css'
+import MyWeather from './MyWeather'
 import Clock from './Timer'
 import TodoLists from './Todolists'
 {
@@ -55,6 +56,7 @@ function App() {
       <div>
         <TodoLists />
         <Clock />
+        <MyWeather weather="맑음">일기예보</MyWeather>
       </div>
     </div>
   )

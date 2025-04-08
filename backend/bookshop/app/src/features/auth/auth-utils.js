@@ -1,75 +1,135 @@
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
 const rateLimit = require('express-rate-limit')
+const { v4: uuidv4 } = require('uuid')
 
 const generateAccessToken = (user) => {
+  const tokenId = uuidv4()
   return jwt.sign(
-    { id: user.id, name: user.name, email: user.email },
+    {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      type: 'access',
+      tokenId,
+    },
     process.env.JWT_SECRET,
-    { expiresIn: '1h', issuer: 'jonghyun' },
+    {
+      expiresIn: config.jwt.accessToken.expiresIn,
+      issuer: 'jonghyun',
+    },
   )
 }
 
 const generateRefreshToken = (userId) => {
-  return jwt.sign({ id: userId }, process.env.JWT_REFRESH_SECRET, {
-    expiresIn: '7d',
-    issuer: 'jonghyun',
-  })
+  const tokenId = uuidv4()
+  return jwt.sign(
+    {
+      id: userId,
+      type: 'refresh',
+      tokenId,
+    },
+    process.env.JWT_REFRESH_SECRET,
+    {
+      expiresIn: config.jwt.refreshToken.expiresIn,
+      issuer: 'jonghyun',
+    },
+  )
 }
 
 const hashPassword = (password) => {
-  const salt = crypto.randomBytes(16).toString('base64')
-  const hashedPassword = crypto
-    .pbkdf2Sync(password, salt, 1000, 64, 'sha512')
-    .toString('base64')
-  return { salt, hashedPassword }
+  try {
+    const salt = crypto.randomBytes(16).toString('base64')
+    const hashedPassword = crypto
+      .pbkdf2Sync(password, salt, 1000, 64, 'sha512')
+      .toString('base64')
+    return { salt, hashedPassword }
+  } catch (error) {
+    throw error
+  }
 }
 
 const verifyPassword = (password, salt, hashedPassword) => {
-  const hash = crypto
-    .pbkdf2Sync(password, salt, 1000, 64, 'sha512')
-    .toString('base64')
-  return hash === hashedPassword
+  try {
+    const hash = crypto
+      .pbkdf2Sync(password, salt, 1000, 64, 'sha512')
+      .toString('base64')
+    return hash === hashedPassword
+  } catch (error) {
+    throw error
+  }
 }
 
 const generateTokens = (id, name, email) => {
-  const accessToken = generateAccessToken({
-    id,
-    name,
-    email,
-  })
+  const user = { id, name, email }
+  const accessToken = generateAccessToken(user)
   const refreshToken = generateRefreshToken(id)
-  return { accessToken, refreshToken }
+
+  return {
+    accessToken,
+    refreshToken,
+    user: { id, name, email },
+  }
 }
 
 const requireAdmin = (req, res, next) => {
-  if (req.user.role !== 'admin') {
-    return res
-      .status(403)
-      .json({ status: 'error', message: '관리자 권한이 필요합니다.' })
+  try {
+    if (req.user.role !== 'admin') {
+      return res
+        .status(403)
+        .json({ status: 'error', message: '관리자 권한이 필요합니다.' })
+    }
+    next()
+  } catch (error) {
+    throw error
   }
-  next()
 }
 
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
+  message: {
+    status: 'error',
+    message: 'Too many login attempts, please try again later',
+  },
+})
+
+const refreshLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 10,
+  message: {
+    status: 'error',
+    message: 'Too many refresh attempts, please try again later',
+  },
+})
+
+const registerLimiter = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000,
+  max: 3,
+  message: {
+    status: 'error',
+    message: 'Too many registration attempts, please try again later',
+  },
 })
 
 const validatePassword = (password) => {
-  const minLength = 8
-  const hasUpperCase = /[A-Z]/.test(password)
-  const hasLowerCase = /[a-z]/.test(password)
-  const hasNumbers = /\d/.test(password)
-  const hasSpecialChar = /[!@#$%^&*]/.test(password)
+  try {
+    const minLength = 8
+    const hasUpperCase = /[A-Z]/.test(password)
+    const hasLowerCase = /[a-z]/.test(password)
+    const hasNumbers = /\d/.test(password)
+    const hasSpecialChar = /[!@#$%^&*]/.test(password)
 
-  if (password.length < minLength) {
-    throw new Error('Password must be at least 8 characters long')
-  }
-  if (!hasUpperCase || !hasLowerCase || !hasNumbers || !hasSpecialChar) {
-    throw new Error(
-      'Password must contain uppercase, lowercase, numbers and special characters',
-    )
+    if (password.length < minLength) {
+      throw new Error('Password must be at least 8 characters long')
+    }
+    if (!hasUpperCase || !hasLowerCase || !hasNumbers || !hasSpecialChar) {
+      throw new Error(
+        'Password must contain uppercase, lowercase, numbers and special characters',
+      )
+    }
+  } catch (error) {
+    throw error
   }
 }
 
@@ -100,8 +160,12 @@ const config = {
 }
 
 const validateConfig = () => {
-  if (!config.jwt.accessToken.secret || !config.jwt.refreshToken.secret) {
-    throw new Error('JWT secrets must be configured')
+  try {
+    if (!config.jwt.accessToken.secret || !config.jwt.refreshToken.secret) {
+      throw new Error('JWT secrets must be configured')
+    }
+  } catch (error) {
+    throw error
   }
 }
 
@@ -113,6 +177,10 @@ module.exports = {
   generateTokens,
   requireAdmin,
   loginLimiter,
+  refreshLimiter,
+  registerLimiter,
   validatePassword,
   validateConfig,
+  AuthError,
+  config,
 }
