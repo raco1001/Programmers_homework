@@ -523,7 +523,7 @@ const paymentRouter = require('./src/features/payments/payment-router')
  *         description: 결제 제공자 추가 성공
  */
 
-const fakerRouter = require('./faker/faker')
+const fakerRouter = require('./tools/faker/faker')
 
 app.use(express.json())
 

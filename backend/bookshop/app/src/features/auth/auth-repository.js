@@ -8,7 +8,6 @@ const findUserByEmail = async (email) => {
     )
     return rows
   } catch (error) {
-    console.error(`[findUserByEmail] 오류 발생: ${error.message}`)
     throw error
   }
 }

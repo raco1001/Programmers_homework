@@ -1,46 +1,18 @@
 const { getBooks, getBookDetail } = require('./book-service')
-const { format, subMonths } = require('date-fns')
+const { BooksReturns } = require('./entities/returns/BooksReturns')
+const { BookDetailReturn } = require('./entities/returns/BookDetailsReturns')
+const jwt = require('jsonwebtoken')
 
 const getBooksByRange = async (req, res, next) => {
   try {
-    const {
-      category = 'ALL',
-      startDate,
-      endDate,
-      page = 1,
-      limit = 8,
-    } = req.query
+    const books = await getBooks({ params: req.query })
 
-    const dateData = {
-      defaultStartDate: '',
-      defaultEndDate: '',
-    }
-
-    if (!startDate || !endDate) {
-      dateData.defaultStartDate = format(subMonths(new Date(), 3), 'yyyy-MM-dd')
-      dateData.defaultEndDate = format(new Date(), 'yyyy-MM-dd')
-    } else {
-      dateData.defaultStartDate = startDate
-      dateData.defaultEndDate = endDate
-    }
-
-    const pageInt = parseInt(page, 10)
-    const limitInt = parseInt(limit, 10)
-
-    const books = await getBooks({
-      category,
-      startDate: dateData.defaultStartDate,
-      endDate: dateData.defaultEndDate,
-      page: pageInt,
-      limit: limitInt,
-    })
-
-    const counts = books.length
     res.status(200).json({
       status: 'success',
-      data: { books: books, page: pageInt, limit: limitInt, counts: counts },
+      data: BooksReturns.fromRawData(books),
     })
   } catch (error) {
+    console.error('Error in getBooksByRange controller:', error)
     next(error)
   }
 }
@@ -49,11 +21,11 @@ const getBookById = async (req, res, next) => {
   try {
     const bookId = req.params.id
 
-    let userid = null
+    let userId = null
     if (req.headers.authorization) {
       const token = req.headers.authorization.split(' ')[1]
       const decoded = jwt.verify(token, process.env.JWT_SECRET)
-      userid = decoded.id
+      userId = decoded.id
     }
 
     if (!bookId) {
@@ -62,16 +34,20 @@ const getBookById = async (req, res, next) => {
         .json({ status: 'error', message: 'Book ID is required.' })
     }
 
-    const bookDetails = await getBookDetail({ bookId, userid })
+    const bookDetails = await getBookDetail({ bookId, userId })
 
-    if (bookDetails.bookDetail === 0) {
+    if (!bookDetails.bookDetail) {
       return res
         .status(404)
         .json({ status: 'error', message: 'Book not found.' })
     }
 
-    res.status(200).json({ status: 'success', data: bookDetails })
+    res.status(200).json({
+      status: 'success',
+      data: BookDetailReturn.fromRawData(bookDetails),
+    })
   } catch (error) {
+    console.error('Error in getBookById controller:', error)
     next(error)
   }
 }

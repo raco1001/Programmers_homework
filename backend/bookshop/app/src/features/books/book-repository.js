@@ -1,9 +1,17 @@
 const db = require('../../database/mariadb')
 
 const findBooks = async (params) => {
-  const range = 'WHERE publication_date BETWEEN ? AND ?'
+  const range = `WHERE publication_date BETWEEN '${params.startDate}' AND '${params.endDate}'`
+  const limit = params.limit
+  const page = params.page
+  const category = params.category
+  const keyword = params.keyword || ''
+
   const finalCategory =
     category === 'ALL' ? '' : `AND main_category = '${category}'`
+
+  const finalKeyword =
+    keyword === '' ? '' : `AND title LIKE '%${keyword.trim()}%'`
 
   const query = `
     SELECT 
@@ -35,14 +43,46 @@ const findBooks = async (params) => {
     JOIN  (  SELECT id, title, author, summary 
           FROM books
           ${range}
+          ${finalKeyword}
         ) b 
     ON a.id = b.id
     LIMIT ${limit} OFFSET ${(page - 1) * limit}
     `
 
-  const [rows] = await db.query(query, params)
+  try {
+    const [rows] = await db.query(query)
+    return rows.length ? rows : []
+  } catch (error) {
+    console.error('Error in findBooks:', error)
+    throw new Error('Failed to fetch books')
+  }
+}
 
-  return rows.length ? rows : []
+const getBooksTotalCount = async (params) => {
+  const range = `WHERE publication_date BETWEEN '${params.startDate}' AND '${params.endDate}'`
+  const category = params.category
+  const keyword = params.keyword || ''
+
+  const finalCategory =
+    category === 'ALL' ? '' : `AND main_category = '${category}'`
+
+  const finalKeyword =
+    keyword === '' ? '' : `AND title LIKE '%${keyword.trim()}%'`
+
+  const query = `
+    SELECT COUNT(*) as count FROM books
+    ${range}
+    ${finalCategory}
+    ${finalKeyword}
+  `
+
+  try {
+    const [result] = await db.query(query)
+    return result[0].count
+  } catch (error) {
+    console.error('Error in getBooksTotalCount:', error)
+    throw new Error('Failed to get books total count')
+  }
 }
 
 const findBookDetail = async (bookId, userId) => {
@@ -63,7 +103,7 @@ const findBookDetail = async (bookId, userId) => {
       b.description,
       b.table_of_contents,
       b.publication_date
-      ${userId ? `,(SELECT COUNT(*) FROM user_likes where user_id = ${userId} AND product_id = ${bookId}) as isLiked` : ''}
+      ${userId ? `,(SELECT COUNT(*) FROM user_likes where user_id = ? AND product_id = ?) as isLiked` : ''}
     FROM (
       SELECT
         id
@@ -72,7 +112,7 @@ const findBookDetail = async (bookId, userId) => {
         ,price
         ,img_path
       FROM products
-      WHERE id = ${bookId}
+      WHERE id = ?
     ) p
     JOIN (
       SELECT
@@ -88,38 +128,49 @@ const findBookDetail = async (bookId, userId) => {
         ,table_of_contents
         ,publication_date
       FROM books
-      WHERE id = ${bookId}
+      WHERE id = ?
     ) b ON p.id = b.id;
     `
-  const [result] = await db.query(query)
 
-  const bookDetail = result[0]
+  try {
+    let result
+    if (userId) {
+      ;[result] = await db.query(query, [userId, bookId, bookId])
+    } else {
+      ;[result] = await db.query(query, [bookId, bookId])
+    }
 
-  if (!bookDetail) return [0, 0]
+    const bookDetail = result[0]
 
-  const [categories, info] = await db.query(
-    `
-    WITH RECURSIVE CategoryPath AS (
-        SELECT id, parent_id, name
-        FROM categories
-        WHERE id = ?
+    if (!bookDetail) return { bookDetail: null, categoryPath: [] }
 
-        UNION ALL
-        
-        SELECT c.id, c.parent_id, c.name
-        FROM categories c
-        JOIN CategoryPath cp ON c.id = cp.parent_id
+    const [categories] = await db.query(
+      `
+      WITH RECURSIVE CategoryPath AS (
+          SELECT id, parent_id, name
+          FROM categories
+          WHERE id = ?
+
+          UNION ALL
+          
+          SELECT c.id, c.parent_id, c.name
+          FROM categories c
+          JOIN CategoryPath cp ON c.id = cp.parent_id
+      )
+
+      SELECT name
+      FROM CategoryPath
+      ORDER BY id ASC;`,
+      [bookDetail.categoryId],
     )
 
-    SELECT name
-    FROM CategoryPath
-    ORDER BY id ASC;`,
-    [bookDetail.category_id],
-  )
+    const categoryPath = categories.map((category) => category.name)
 
-  const categoryPath = categories.map((category) => category.name)
-
-  return { bookDetail: bookDetail, categoryPath: categoryPath }
+    return { bookDetail, categoryPath }
+  } catch (error) {
+    console.error('Error in findBookDetail:', error)
+    throw new Error('Failed to fetch book details')
+  }
 }
 
-module.exports = { findBooks, findBookDetail }
+module.exports = { findBooks, findBookDetail, getBooksTotalCount }
