@@ -1,0 +1,2 @@
+{"email":"1@test.com","event":"login_success","level":"info","message":"User logged in successfully","requestId":"c3003e5a-9f20-4dd1-a4c9-fb2519812b27","service":"auth-service","timestamp":"2025-04-09 10:21:21","userId":"5dd770c9-4001-4d66-8d6d-21c0c78b4b2e"}
+{"error":"Server error during token validation","event":"token_validation_error","level":"warn","message":"Token validation failed","requestId":"ebf9c908-bdf7-4be6-8a6d-bdb07ee76480","service":"auth-service","timestamp":"2025-04-09 10:25:12","tokenId":"unknown"}

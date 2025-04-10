@@ -14,7 +14,7 @@ const {
 } = require('../../shared/middlewares/validateRequestBody')
 const { validateAccessToken } = require('../auth/auth-middleware')
 
-router.post('/join', validateAccessToken, validateJoin, register)
+router.post('/join', validateJoin, register)
 
 router
   .route('/:id')

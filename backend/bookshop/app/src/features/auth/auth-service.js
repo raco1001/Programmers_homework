@@ -6,8 +6,6 @@ const {
 const { verifyPassword, generateTokens } = require('./auth-utils')
 const { binaryToUUID, uuidToBinary } = require('../../shared/utils/convertIds')
 const { AuthError } = require('./auth-utils')
-const { blacklistToken, blacklistAllUserTokens } = require('./token-blacklist')
-const jwt = require('jsonwebtoken')
 
 const authenticateUser = async (email, password) => {
   const user = await findUserByEmail(email)
@@ -55,14 +53,6 @@ const refreshToken = async (userId, userRefreshToken) => {
     throw new AuthError('Invalid refresh token. Please login again.', 401)
   }
 
-  try {
-    const decoded = jwt.verify(userRefreshToken, process.env.JWT_REFRESH_SECRET)
-    const expiresIn = Math.ceil(decoded.exp - decoded.iat)
-    await blacklistToken(decoded.tokenId, expiresIn)
-  } catch (error) {
-    console.error('Error blacklisting old refresh token:', error)
-  }
-
   const { accessToken, refreshToken } = generateTokens(userId, name, email)
 
   const refreshTokenResult = await storeRefreshToken(userBId, refreshToken)
@@ -76,33 +66,7 @@ const refreshToken = async (userId, userRefreshToken) => {
   }
 }
 
-const logout = async (userId, refreshToken) => {
-  if (refreshToken) {
-    try {
-      const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
-      const expiresIn = Math.ceil(decoded.exp - decoded.iat)
-      await blacklistToken(decoded.tokenId, expiresIn)
-    } catch (error) {
-      console.error('Error blacklisting refresh token during logout:', error)
-    }
-  }
-
-  return { success: true }
-}
-
-const logoutFromAllDevices = async (userId) => {
-  try {
-    await blacklistAllUserTokens(userId)
-    return { success: true }
-  } catch (error) {
-    console.error('Error during logout from all devices:', error)
-    throw new AuthError('Failed to logout from all devices.', 500)
-  }
-}
-
 module.exports = {
   authenticateUser,
   refreshToken,
-  logout,
-  logoutFromAllDevices,
 }

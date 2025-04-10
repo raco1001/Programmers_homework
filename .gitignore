@@ -15,7 +15,13 @@ frontend/ReactExamples/todolist/node_modules
 frontend/ReactExamples/todolist/node_modules/*
 frontend/ReactExamples/todolist/.env
 frontend/ReactExamples/todolist/.env.local
-
+frontend/react-task-app/node_modules
+frontend/react-task-app/node_modules/*
+frontend/react-task-app/.env
+frontend/react-task-app/.env.local
+frontend/react-task-app/.env.development.local
+frontend/react-task-app/.env.test.local
+frontend/react-task-app/.env.production.local
 
 
 .vscode

@@ -1,28 +1,7 @@
-const {
-  authenticateUser,
-  logout,
-  logoutFromAllDevices,
-} = require('./auth-service')
+const { authenticateUser } = require('./auth-service')
 const { AuthError } = require('./auth-utils')
 const authLogger = require('./auth-logger')
-
-const handleAuthError = (err, req, res, next) => {
-  console.error(`Auth Error [${req.requestId}]:`, err)
-
-  if (err instanceof AuthError) {
-    return res.status(err.statusCode).json({
-      status: 'error',
-      message: err.message,
-      requestId: req.requestId,
-    })
-  }
-
-  return res.status(500).json({
-    status: 'error',
-    message: 'An unexpected error occurred',
-    requestId: req.requestId,
-  })
-}
+const { handleAuthError } = require('./auth-middleware')
 
 const login = async (req, res, next) => {
   try {
@@ -46,7 +25,6 @@ const login = async (req, res, next) => {
       },
     })
   } catch (error) {
-    // Log failed login attempt
     if (error instanceof AuthError) {
       authLogger.logLoginFailure(req.body.email, req.requestId, error.message)
     }
@@ -85,10 +63,7 @@ const updateRefreshToken = async (req, res, next) => {
 const logout = async (req, res, next) => {
   try {
     const userId = req.user?.id
-    const refreshToken = req.cookies.refreshToken
-
-    await logout(userId, refreshToken)
-
+    console.log('Starting logout process...')
     if (userId) {
       authLogger.logLogout(userId, req.requestId)
     }
@@ -103,32 +78,9 @@ const logout = async (req, res, next) => {
   }
 }
 
-const logoutFromAllDevices = async (req, res, next) => {
-  try {
-    const userId = req.user?.id
-
-    if (!userId) {
-      throw new AuthError('User ID is required', 400)
-    }
-
-    await logoutFromAllDevices(userId)
-
-    authLogger.logLogout(userId, req.requestId, true)
-
-    res.clearCookie('refreshToken')
-    res.status(200).json({
-      status: 'success',
-      message: 'Logged out from all devices successfully',
-    })
-  } catch (error) {
-    next(error)
-  }
-}
-
 module.exports = {
   login,
   updateRefreshToken,
   logout,
-  logoutFromAllDevices,
   handleAuthError,
 }
