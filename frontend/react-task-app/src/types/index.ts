@@ -21,6 +21,5 @@ export interface ILogItem {
 export interface IBoard {
   boardId: string
   boardName: string
-  boardDescription: string
   lists: IList[]
 }

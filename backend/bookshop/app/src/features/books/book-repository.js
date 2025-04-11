@@ -1,17 +1,17 @@
 const db = require('../../database/mariadb')
 
 const findBooks = async (params) => {
-  const range = `WHERE publication_date BETWEEN '${params.startDate}' AND '${params.endDate}'`
+  const range = `AND created_at BETWEEN '${params.startDate}' AND '${params.endDate}'`
   const limit = params.limit
   const page = params.page
   const category = params.category
   const keyword = params.keyword || ''
 
   const finalCategory =
-    category === 'ALL' ? '' : `AND main_category = '${category}'`
+    category === 'ALL' ? '' : `AND main_category = '${category.trim()}'`
 
   const finalKeyword =
-    keyword === '' ? '' : `AND title LIKE '%${keyword.trim()}%'`
+    keyword === '' ? '' : `WHERE title LIKE '%${keyword.trim()}%'`
 
   const query = `
     SELECT 
@@ -39,16 +39,16 @@ const findBooks = async (params) => {
           products
         WHERE product_table_name = 'books'
         ${finalCategory} 
+        ${range}
       ) a 
-    JOIN  (  SELECT id, title, author, summary 
-          FROM books
-          ${range}
-          ${finalKeyword}
+    JOIN  (  
+      SELECT id, title, author, summary 
+      FROM books
+      ${finalKeyword}
         ) b 
     ON a.id = b.id
     LIMIT ${limit} OFFSET ${(page - 1) * limit}
     `
-
   try {
     const [rows] = await db.query(query)
     return rows.length ? rows : []
@@ -59,21 +59,25 @@ const findBooks = async (params) => {
 }
 
 const getBooksTotalCount = async (params) => {
-  const range = `WHERE publication_date BETWEEN '${params.startDate}' AND '${params.endDate}'`
+  const range = `AND created_at BETWEEN '${params.startDate}' AND '${params.endDate}'`
   const category = params.category
   const keyword = params.keyword || ''
 
   const finalCategory =
     category === 'ALL' ? '' : `AND main_category = '${category}'`
 
-  const finalKeyword =
-    keyword === '' ? '' : `AND title LIKE '%${keyword.trim()}%'`
+  const finalKeyword = keyword === '' ? '' : `WHERE title LIKE '%${keyword}%'`
 
   const query = `
-    SELECT COUNT(*) as count FROM books
+    SELECT COUNT(*) as count FROM products p
+    JOIN (
+      SELECT id, title, author, summary 
+      FROM books
+      ${finalKeyword}
+    ) b ON p.id = b.id
+    WHERE product_table_name = 'books'
     ${range}
     ${finalCategory}
-    ${finalKeyword}
   `
 
   try {
@@ -86,6 +90,9 @@ const getBooksTotalCount = async (params) => {
 }
 
 const findBookDetail = async (bookId, userId) => {
+  const isLiked = userId
+    ? `,(SELECT COUNT(*) FROM user_likes WHERE user_id = ? AND product_id = ?) as isLiked`
+    : ''
   const query = `
     SELECT 
       p.id as bookBid,
@@ -103,30 +110,30 @@ const findBookDetail = async (bookId, userId) => {
       b.description,
       b.table_of_contents,
       b.publication_date
-      ${userId ? `,(SELECT COUNT(*) FROM user_likes where user_id = ? AND product_id = ?) as isLiked` : ''}
+      ${isLiked}
     FROM (
       SELECT
-        id
-        ,main_category
-        ,likes
-        ,price
-        ,img_path
+        id,
+        main_category,
+        likes,
+        price,
+        img_path
       FROM products
       WHERE id = ?
     ) p
     JOIN (
       SELECT
-        id
-        ,title
-        ,category_id
-        ,format
-        ,author
-        ,isbn
-        ,pages
-        ,summary
-        ,description
-        ,table_of_contents
-        ,publication_date
+        id,
+        title,
+        category_id,
+        format,
+        author,
+        isbn,
+        pages,
+        summary,
+        description,
+        table_of_contents,
+        publication_date
       FROM books
       WHERE id = ?
     ) b ON p.id = b.id;
@@ -135,7 +142,7 @@ const findBookDetail = async (bookId, userId) => {
   try {
     let result
     if (userId) {
-      ;[result] = await db.query(query, [userId, bookId, bookId])
+      ;[result] = await db.query(query, [userId, bookId, bookId, bookId])
     } else {
       ;[result] = await db.query(query, [bookId, bookId])
     }
@@ -149,7 +156,7 @@ const findBookDetail = async (bookId, userId) => {
       WITH RECURSIVE CategoryPath AS (
           SELECT id, parent_id, name
           FROM categories
-          WHERE id = ?
+          WHERE id = ${bookDetail.categoryId}
 
           UNION ALL
           
@@ -161,7 +168,6 @@ const findBookDetail = async (bookId, userId) => {
       SELECT name
       FROM CategoryPath
       ORDER BY id ASC;`,
-      [bookDetail.categoryId],
     )
 
     const categoryPath = categories.map((category) => category.name)

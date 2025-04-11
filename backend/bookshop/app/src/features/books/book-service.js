@@ -41,7 +41,6 @@ const getBooks = async ({ params }) => {
       page: pageInt,
       limit: limitInt,
     })
-    console.log(category)
     const totalCount = await getBooksTotalCount({
       keyword: keyword,
       category: category,
