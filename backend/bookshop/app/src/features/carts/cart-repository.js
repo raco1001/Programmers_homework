@@ -1,6 +1,7 @@
 const db = require('../../database/mariadb')
 
 const insertCartItem = async (userId, productId, count) => {
+  console.log('insertCartItem', userId, productId, count)
   const query = `
         INSERT INTO carts (user_id, product_id, count)
         VALUES (?, ?, ?)

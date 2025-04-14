@@ -1,7 +1,39 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { FiX } from 'react-icons/fi'
+import { useTypedSelector } from '../../hooks/redux'
+import { ILogItem } from '../../types'
+import {
+  closeButton,
+  header,
+  logList,
+  modalWindow,
+  title,
+  wrapper,
+} from './LoggerModal.css'
+import LogItem from './LogItem/LogItem'
 
-const LoggerModal = () => {
-  return <div>LoggerModal</div>
+type TLoggerModalProps = {
+  setIsLoggerOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const LoggerModal: React.FC<TLoggerModalProps> = ({ setIsLoggerOpen }) => {
+  const logs = useTypedSelector((state) => state.logger.logArray)
+  const [logItem, setLogItem] = useState<ILogItem | null>(null)
+  return (
+    <div className={wrapper}>
+      <div className={modalWindow}>
+        <div className={header}>
+          <div className={title}>활동 기록</div>
+          <FiX className={closeButton} onClick={() => setIsLoggerOpen(false)} />
+        </div>
+        <div className={logList}>
+          {logs.map((log) => (
+            <LogItem key={log.logId} logItem={log} />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export default LoggerModal

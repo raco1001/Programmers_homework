@@ -41,7 +41,8 @@ const getUserById = async (req, res, next) => {
 
 const authenticatUserByEmail = async (req, res, next) => {
   try {
-    const userEmail = req.email
+    console.log('authenticatUserByEmail')
+    const userEmail = req.body.email
 
     const user = await getUserByEmail(userEmail)
     if (!user) {
@@ -59,7 +60,10 @@ const authenticatUserByEmail = async (req, res, next) => {
 
 const resetPassword = async (req, res, next) => {
   try {
-    const result = await updateUserPassword(req.params.email, req.body.password)
+    console.log('resetPassword', req.params.userId, req.body.password)
+    const userId = req.params.userId
+    const password = req.body.password
+    const result = await updateUserPassword(userId, password)
     if (result === 0) {
       return res
         .status(404)

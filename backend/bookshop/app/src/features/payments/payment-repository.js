@@ -9,7 +9,7 @@ const insertPaymentProvider = async (id, paymentName, paymentType) => {
   return result.id
 }
 
-const insertInternalPayment = async (paymentInfo) => {
+const insertPayment = async (paymentInfo) => {
   const { id, user_id, provider_id, method, transaction_id, amount, receipt } =
     paymentInfo
   console.log(paymentInfo)
@@ -31,34 +31,7 @@ const insertInternalPayment = async (paymentInfo) => {
   return id
 }
 
-const insertPGPayment = async (paymentInfo) => {
-  const {
-    paymentBid,
-    userBid,
-    providerBid,
-    paymentMethod,
-    transactionId,
-    amount,
-    receipt,
-  } = paymentInfo
-  const query = `
-        INSERT INTO payments (id, user_id, provider_id, method, transaction_id, amount, receipt)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    `
-  await db.query(query, [
-    paymentBid,
-    userBid,
-    providerBid,
-    paymentMethod,
-    transactionId,
-    amount,
-    receipt,
-  ])
-  return id
-}
-
 module.exports = {
   insertPaymentProvider,
-  insertInternalPayment,
-  insertPGPayment,
+  insertPayment,
 }

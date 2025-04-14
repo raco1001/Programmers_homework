@@ -1,4 +1,4 @@
-const { authenticateUser } = require('./auth-service')
+const { authenticateUser, refreshToken } = require('./auth-service')
 const { AuthError } = require('./auth-utils')
 const authLogger = require('./auth-logger')
 const { handleAuthError } = require('./auth-middleware')
@@ -37,13 +37,13 @@ const updateRefreshToken = async (req, res, next) => {
     const userId = req.userId
     const userRefreshToken = req.cookies.refreshToken
 
-    const { accessToken, refreshToken } = await refreshToken(
+    const { accessToken, updatedRefreshToken } = await refreshToken(
       userId,
       userRefreshToken,
     )
 
     authLogger.logTokenRefresh(userId, req.requestId)
-    res.cookie('refreshToken', refreshToken, {
+    res.cookie('refreshToken', updatedRefreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',

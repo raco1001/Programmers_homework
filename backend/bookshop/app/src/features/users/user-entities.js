@@ -6,6 +6,9 @@ const requestTypes = {
     email: Joi.string().email().required(),
     password: Joi.string().min(8).max(200).required(),
   }),
+  email: Joi.object({
+    email: Joi.string().email().required(),
+  }),
 }
 
 const responseTypes = {

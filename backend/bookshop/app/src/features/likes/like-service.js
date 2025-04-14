@@ -23,9 +23,9 @@ createLike = async (userId, productId) => {
   return result
 }
 
-deleteLikeIfExists = async (userId) => {
+deleteLikeIfExists = async (userId, productId) => {
   const exists = await findLikes(userId, productId)
-  if (exists) {
+  if (!exists) {
     return 0
   }
 

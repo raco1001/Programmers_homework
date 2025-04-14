@@ -1,55 +1,41 @@
 const db = require('../../database/mariadb')
 
-const insertOrder = async (orderInfo) => {
+const insertOrder = async (conn, orderInfo) => {
   const query = `
-        INSERT INTO orders (id, payment_id, address_id, amount, created_at)
-        VALUES (?, ?, ?, ?, NOW())
+        INSERT INTO orders (id, address_id, amount)
+        VALUES (?, ?, ?)
     `
 
-  const values = [
-    orderInfo.orderBid,
-    orderInfo.paymentBid,
-    orderInfo.addressBid,
-    orderInfo.amount,
-  ]
+  const values = [orderInfo.orderBid, orderInfo.addressBid, orderInfo.amount]
 
-  await db.query(query, values)
+  await conn.query(query, values)
 }
 
-const insertOrderItems = async (orderItems) => {
+const insertOrderItems = async (conn, userBid, orderBid, orderItems) => {
   const query = `
-        INSERT INTO order_items (id, order_id, product_id, count, total_price, created_at)
-        VALUES ${orderItems.map(() => '(?, ?, ?, ?, ?, ?, NOW())').join(', ')}
+        INSERT INTO order_items (id, order_id, user_id, product_id, count, total_price)
+        VALUES ${orderItems.map(() => '(?, ?, ?, ?, ?, ?)').join(', ')}
     `
 
   const values = orderItems.flatMap((item) => [
     item.orderItemBid,
-    item.orderBid,
+    orderBid,
+    userBid,
     item.productId,
-    item.price,
     item.count,
     item.totalPrice,
   ])
 
-  await db.query(query, values)
+  await conn.query(query, values)
 }
 
-const removeItemsTx = async (conn, userId, productIds) => {
-  const placeholders = productIds.map(() => '?').join(',')
-  const query = `
-        DELETE FROM carts WHERE user_id = ? AND product_id IN (${placeholders})
-    `
-  await conn.query(query, [userId, ...productIds])
-}
-
-const updateOrderItem = async (userId, productId, quantity) => {
-  const query = `
-      UPDATE order_items
-      SET count = ?, updated_at = NOW()
-      WHERE user_id = ? AND product_id = ?
-  `
-  await db.query(query, [quantity, userId, productId])
-}
+// const removeItemsTx = async (conn, userId, productIds) => {
+//   const placeholders = productIds.map(() => '?').join(',')
+//   const query = `
+//         DELETE FROM carts WHERE user_id = ? AND product_id IN (${placeholders})
+//     `
+//   await conn.query(query, [userId, ...productIds])
+// }
 
 const findOrderItemsByUser = async (uid, pageSize, pageNumber) => {
   const offset = (pageNumber - 1) * pageSize
@@ -67,7 +53,5 @@ const findOrderItemsByUser = async (uid, pageSize, pageNumber) => {
 module.exports = {
   insertOrder,
   insertOrderItems,
-  removeItemsTx,
   findOrderItemsByUser,
-  updateOrderItem,
 }

@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { validateJoin } = require('./user-middleware')
+const { validateJoin, validateEmail } = require('./user-middleware')
 const {
   register,
   getUserById,
@@ -9,9 +9,6 @@ const {
   resetPassword,
 } = require('./user-controller')
 
-const {
-  validateRequest,
-} = require('../../shared/middlewares/validateRequestBody')
 const { validateAccessToken } = require('../auth/auth-middleware')
 
 router.post('/join', validateJoin, register)
@@ -21,10 +18,8 @@ router
   .get(validateAccessToken, getUserById)
   .delete(validateAccessToken, deleteUser)
 
-router
-  .route('/reset/:email')
-  .get(validateAccessToken, validateRequest, authenticatUserByEmail)
+router.route('/validateEmail').post(validateEmail, authenticatUserByEmail)
 
-router.route('/reset/:id').put(validateAccessToken, resetPassword)
+router.route('/reset/:userId').put(resetPassword)
 
 module.exports = router

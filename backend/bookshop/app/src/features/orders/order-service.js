@@ -1,58 +1,48 @@
-const orderRepo = require('./order-repository')
+const {
+  insertOrder,
+  insertOrderItems,
+  findOrderItemsByUser,
+} = require('./order-repository')
 const { uuidToBinary, binaryToUUID } = require('../../shared/utils/convertIds')
+const generateUUID = require('../../shared/utils/generateUUID')
+const db = require('../../database/mariadb')
 
-// const createOrder = (userId, cartItems, addressId, paymentInfo) => {
-//     const uid = toBinaryUUID(userId);
-//     let conn;
-//     let paymentId, orderId;
+const createOrder = async (userId, orderItems, addressId, amount) => {
+  const priceSum = orderItems.reduce((acc, item) => acc + item.totalPrice, 0)
 
-//     return db.getConnection()
-//         .then(connection => {
-//             conn = connection;
-//             return conn.beginTransaction();
-//         })
-//         .then(() => paymentRepo.insertPaymentTx(conn, uid, paymentInfo))
-//         .then(result => {
-//             paymentId = result;
-//             const totalAmount = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-//             return orderRepo.insertOrderTx(conn, uid, addressId, paymentId, totalAmount);
-//         })
-//         .then(result => {
-//             orderId = result;
-//             const promises = cartItems.map(item =>
-//                 orderRepo.insertOrderItemTx(conn, orderId, uid, item.productId, item.quantity, item.totalPrice, item.deliveryId)
-//             );
-//             return Promise.all(promises);
-//         })
-//         .then(() => {
-//             const productIds = cartItems.map(item => item.productId);
-//             return cartRepo.removeItemsTx(conn, uid, productIds);
-//         })
-//         .then(() => conn.commit())
-//         .then(() => orderId)
-//         .catch(err => {
-//             return conn.rollback().then(() => { throw err; });
-//         })
-//         .finally(() => {
-//             if (conn) conn.release();
-//         });
-// };
+  if (priceSum !== amount) {
+    throw new Error('결제 금액이 일치하지 않습니다.')
+  }
 
-const modifyOrderItem = async (userId, productId) => {
-  const uid = uuidToBinary(userId)
-  const pid = uuidToBinary(productId)
-  return await orderRepo.updateOrderItem(uid, pid)
-}
-
-const removeOrderItem = async (userId, productId) => {
-  const uid = uuidToBinary(userId)
-  const pid = uuidToBinary(productId)
-  return await orderRepo.deleteOrderItem(uid, pid)
+  const userBid = uuidToBinary(userId)
+  const orderBid = uuidToBinary(generateUUID())
+  const addressBid = uuidToBinary(addressId)
+  const conn = await db.getConnection()
+  await conn.beginTransaction()
+  try {
+    await insertOrder(conn, orderBid, userBid, addressBid, amount)
+    const modifiedItems = orderItems.map((item) => ({
+      ...item,
+      orderItemBid: uuidToBinary(generateUUID()),
+    }))
+    await insertOrderItems(conn, userBid, orderBid, modifiedItems)
+    await conn.commit()
+  } catch (err) {
+    await conn.rollback()
+    throw err
+  } finally {
+    conn.release()
+  }
+  const orderId = binaryToUUID(orderBid)
+  return orderId
 }
 
 const getOrderItemsByUser = async (userId, pageSize, pageNumber) => {
-  const uid = uuidToBinary(userId)
-  return await orderRepo.findOrderItemsByUser(uid, pageSize, pageNumber)
+  const userBid = uuidToBinary(userId)
+  return await findOrderItemsByUser(userBid, pageSize, pageNumber)
 }
 
-module.exports = { removeOrderItem, getOrderItemsByUser, modifyOrderItem }
+module.exports = {
+  getOrderItemsByUser,
+  createOrder,
+}

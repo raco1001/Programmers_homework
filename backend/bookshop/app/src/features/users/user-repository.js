@@ -1,4 +1,5 @@
 const db = require('../../database/mariadb')
+const { binaryToUUID } = require('../../shared/utils/convertIds')
 
 const createUser = async (id, name, email, password, salt) => {
   try {
@@ -28,6 +29,8 @@ findUserByEmail = async (email) => {
     'SELECT id, name, email FROM users WHERE email = ?',
     [email],
   )
+  console.log('rows', JSON.stringify(rows))
+  rows[0].id = binaryToUUID(rows[0].id)
   return rows.length ? rows[0] : null
 }
 
@@ -36,7 +39,7 @@ deleteUserById = async (userId) => {
   return result.affectedRows
 }
 
-updateUserById = async (userId) => {
+updateUserById = async (userId, password) => {
   const [result] = await db.query(
     'UPDATE users SET password = ? WHERE id = ? ',
     [password, userId],

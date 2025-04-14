@@ -10,6 +10,7 @@ const cartRouter = require('./src/features/carts/cart-router')
 const orderRouter = require('./src/features/orders/order-router')
 const likeRouter = require('./src/features/likes/like-router')
 const paymentRouter = require('./src/features/payments/payment-router')
+const addressRouter = require('./src/features/addresses/addresses-router')
 // const deliveryRouter = require('../features/deliveries/deliveryRouter');
 // const reviewRouter = require('../features/reviews/review-router');
 

@@ -7,7 +7,7 @@ const {
 
 const getCartItems = async (req, res, next) => {
   try {
-    const { userId } = req.params
+    const userId = req.userId
     console.log(userId)
     const items = await getCartItemsByUserId(userId)
     res.status(200).json({ status: 'success', data: items })
@@ -18,7 +18,9 @@ const getCartItems = async (req, res, next) => {
 
 const addToCart = async (req, res, next) => {
   try {
-    const { userId } = req.params
+    console.log('addToCart', req.userId)
+    const userId = req.userId
+    console.log('userId', userId)
     const { productId, count } = req.body
     await addCartItem(userId, productId, count)
     res
@@ -31,7 +33,7 @@ const addToCart = async (req, res, next) => {
 
 const updateCartItem = async (req, res, next) => {
   try {
-    const { userId } = req.params
+    const userId = req.userId
     const { productId, count } = req.body
     if (count < 1) {
       await removeCartItem(userId, productId)
@@ -48,7 +50,7 @@ const updateCartItem = async (req, res, next) => {
 
 const deleteFromCart = async (req, res, next) => {
   try {
-    const { userId } = req.params
+    const userId = req.userId
     const { productId } = req.body
     await removeCartItem(userId, productId)
     res

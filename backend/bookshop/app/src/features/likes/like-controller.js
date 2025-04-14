@@ -1,8 +1,11 @@
 const { getLike, createLike, deleteLikeIfExists } = require('./like-service')
-
+const {
+  uuidToBinary,
+  binaryToUUID,
+} = require('./../../shared/utils/convertIds')
 const addLike = async (req, res, next) => {
   try {
-    const userId = req.params.userId
+    const userId = req.userId
     const productId = req.body.productId
     console.log(userId, productId)
     const likeUser = await getLike(userId, productId)
@@ -31,7 +34,7 @@ const addLike = async (req, res, next) => {
 
 const removeLike = async (req, res, next) => {
   try {
-    const userId = req.params.userId
+    const userId = req.userId
     const productId = req.body.productId
 
     if (!productId || !userId) {

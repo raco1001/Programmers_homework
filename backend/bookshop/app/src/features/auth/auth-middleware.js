@@ -35,7 +35,8 @@ const validateAccessToken = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
-    req.user = decoded
+    req.userId = decoded.id
+    console.log('validateAccessToken', req.userId)
     next()
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
@@ -88,21 +89,7 @@ const validateRefreshToken = async (req, res, next) => {
 
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
 
-    const isLoggedOut = await isUserLoggedOut(decoded.id, decoded.iat * 1000)
-    if (isLoggedOut) {
-      authLogger.logTokenValidationError(
-        decoded.tokenId,
-        req.requestId,
-        'User has logged out from all devices',
-      )
-      return res.status(401).json({
-        status: 'error',
-        message: 'User has logged out from all devices',
-        requestId: req.requestId,
-      })
-    }
-
-    req.userId = binaryToUUID(decoded.id)
+    req.userId = decoded.id
     next()
   } catch (error) {
     if (error.name === 'TokenExpiredError') {

@@ -10,7 +10,7 @@ const {
 const { validateAccessToken } = require('../auth/auth-middleware')
 
 router
-  .route('/:userId')
+  .route('/')
   .get(validateAccessToken, getCartItems)
   .post(validateAccessToken, addToCart)
   .put(validateAccessToken, updateCartItem)

@@ -41,8 +41,9 @@ removeUser = async (userId) => {
 }
 
 updateUserPassword = async (userId, password) => {
-  password = await hashPassword(password)
-  return await updateUserById(userId, password)
+  const userBid = uuidToBinary(userId)
+  const { hashedPassword } = hashPassword(password)
+  return await updateUserById(userBid, hashedPassword)
 }
 
 module.exports = {

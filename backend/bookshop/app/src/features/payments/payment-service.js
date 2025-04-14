@@ -1,9 +1,5 @@
 const db = require('../../database/mariadb')
-const {
-  insertPaymentProvider,
-  insertInternalPayment,
-  insertPGPayment,
-} = require('./payment-repository')
+const { insertPaymentProvider, insertPayment } = require('./payment-repository')
 const { generateUUID } = require('../../shared/utils/generateUUID')
 const { uuidToBinary } = require('../../shared/utils/convertIds')
 const { generateTransactionId } = require('./utils/generate-transaction-id')
@@ -26,13 +22,13 @@ const createPaymentProvider = (providerName, providerType) => {
   return true
 }
 
-const processPayment = async (paymentInfos) => {
+const processPayment = async (userId, paymentInfos) => {
+  const paymentMethod = paymentInfos.paymentMethod
   const conn = await db.getConnection()
   try {
     await conn.beginTransaction()
 
-    const { userId, providerId, addressId, paymentMethod, paymentType, data } =
-      paymentInfos
+    const { providerId, addressId, data } = paymentInfos
     const paymentBid = uuidToBinary(generateUUID())
     const userBid = uuidToBinary(userId)
     const providerBid = uuidToBinary(providerId)
@@ -52,20 +48,24 @@ const processPayment = async (paymentInfos) => {
       receipt: receipt,
     }
 
-    if (paymentType === 'internal') {
-      await insertInternalPayment(paymentInfo)
-    } else if (paymentType === 'pg') {
-      await insertPGPayment(paymentInfo)
-    } else {
-      throw new Error('지원하지 않는 결제 방식입니다.')
+    const paymentResult = await paymentProviders[paymentMethod](
+      userId,
+      paymentInfo,
+    )
+
+    if (!paymentResult) {
+      throw new Error('결제 실패')
+    }
+
+    const insertPaymentResult = await insertPayment(paymentResult)
+
+    if (!insertPaymentResult) {
+      throw new Error('결제 정보 저장 실패')
     }
 
     const orderBid = generatePK().binaryId
     const orderInfo = { orderBid, paymentBid, addressBid, amount }
     await insertOrder(orderInfo)
-    console.log(
-      `insertOrder완료==============================================================================================`,
-    )
 
     const orderItemInfo = data.map((val) => ({
       orderItemBid: uuidToBinary(generateUUID()),
