@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { FiX } from 'react-icons/fi'
 import { useTypedSelector } from '../../hooks/redux'
-import { ILogItem } from '../../types'
 import {
   closeButton,
   header,
@@ -18,7 +17,6 @@ type TLoggerModalProps = {
 
 const LoggerModal: React.FC<TLoggerModalProps> = ({ setIsLoggerOpen }) => {
   const logs = useTypedSelector((state) => state.logger.logArray)
-  const [logItem, setLogItem] = useState<ILogItem | null>(null)
   return (
     <div className={wrapper}>
       <div className={modalWindow}>

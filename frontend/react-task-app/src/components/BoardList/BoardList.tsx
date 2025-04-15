@@ -1,9 +1,20 @@
 import clsx from 'clsx'
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+} from 'firebase/auth'
 import React, { FC, useRef, useState } from 'react'
-import { FiPlusCircle } from 'react-icons/fi'
-import { useTypedSelector } from '../../hooks/redux'
+import { FiLogIn, FiPlusCircle } from 'react-icons/fi'
+import { GoSignOut } from 'react-icons/go'
+import { app } from '../../../firebase'
+import { useTypedDispatch, useTypedSelector } from '../../hooks/redux'
+import { useAuth } from '../../hooks/useAuth'
+import { removeUser, setUser } from '../../store/slices/userSlice'
 import {
   addButton,
+  addSection,
   boardItem,
   boardItemActive,
   container,
@@ -16,6 +27,7 @@ type BoardListProps = {
 }
 
 const BoardList: FC<BoardListProps> = ({ activeBoardId, setActiveBoardId }) => {
+  const dispatch = useTypedDispatch()
   const { boardArray } = useTypedSelector((state) => state.boards)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -24,6 +36,37 @@ const BoardList: FC<BoardListProps> = ({ activeBoardId, setActiveBoardId }) => {
     setTimeout(() => {
       inputRef.current?.focus()
     }, 100)
+  }
+
+  const auth = getAuth(app)
+  const provider = new GoogleAuthProvider()
+
+  const handleSignIn = () => {
+    signInWithPopup(auth, provider)
+      .then((userCredential) => {
+        console.log(userCredential)
+        const user = userCredential.user
+        console.log(user)
+        dispatch(
+          setUser({
+            email: userCredential.user.email,
+            id: userCredential.user.uid,
+          }),
+        )
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
+
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        dispatch(removeUser())
+      })
+      .catch((error) => {
+        console.error(error)
+      })
   }
 
   return (
@@ -49,11 +92,16 @@ const BoardList: FC<BoardListProps> = ({ activeBoardId, setActiveBoardId }) => {
           <div>{board.boardName}</div>
         </div>
       ))}
-      <div>
+      <div className={addSection}>
         {isFormOpen ? (
           <SideForm inputRef={inputRef} setIsFormOpen={setIsFormOpen} />
         ) : (
           <FiPlusCircle className={addButton} onClick={handleClick} />
+        )}
+        {useAuth().isAuth ? (
+          <GoSignOut className={addButton} onClick={handleSignOut} />
+        ) : (
+          <FiLogIn className={addButton} onClick={handleSignIn} />
         )}
       </div>
     </div>

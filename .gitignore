@@ -22,6 +22,11 @@ frontend/react-task-app/.env.local
 frontend/react-task-app/.env.development.local
 frontend/react-task-app/.env.test.local
 frontend/react-task-app/.env.production.local
-
-
+frontend/drag-and-drop/node_modules
+frontend/drag-and-drop/node_modules/*
+frontend/drag-and-drop/.env
+frontend/drag-and-drop/.env.local
+frontend/drag-and-drop/.env.development.local
+frontend/drag-and-drop/.env.test.local
+frontend/drag-and-drop/.env.production.local
 .vscode

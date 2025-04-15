@@ -23,6 +23,7 @@ export const addButton = style({
   fontSize: vars.fontSizing.T2,
   cursor: 'pointer',
   marginLeft: vars.spacing.big1,
+  marginRight: vars.spacing.big1,
   ':hover': {
     opacity: 0.8,
   },
