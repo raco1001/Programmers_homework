@@ -30,3 +30,4 @@ frontend/drag-and-drop/.env.development.local
 frontend/drag-and-drop/.env.test.local
 frontend/drag-and-drop/.env.production.local
 .vscode
+teamProject

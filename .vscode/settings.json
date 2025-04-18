@@ -17,5 +17,7 @@
     "insert": "#00ff00",
     "visual": "#ff00ff"
   },
-  "html.format.wrapAttributesIndentSize": 4
+  "html.format.wrapAttributesIndentSize": 2,
+  "editor.hover.enabled": true,
+  "editor.hover.above": true
 }
