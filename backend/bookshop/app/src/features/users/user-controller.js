@@ -6,14 +6,13 @@ const {
 } = require('./user-service')
 
 const register = async (req, res, next) => {
-  console.log(`[register] 요청 받음: ${JSON.stringify(req.body)}`)
   try {
-    const { name, email, password } = req.body
-    const result = await registerUser(name, email, password)
+    const { email, password } = req.body
+    const result = await registerUser(email, password)
     if (result === 1) {
       res
         .status(201)
-        .json({ status: 'success', message: `${name}님 가입을 환영합니다!` })
+        .json({ status: 'success', message: `${email}님 가입을 환영합니다!` })
     }
   } catch (error) {
     next(error)

@@ -171,7 +171,12 @@ const findBookDetail = async (bookId, userId) => {
     )
 
     const categoryPath = categories.map((category) => category.name)
-
+    const [images] = await db.query(
+      `SELECT img_url, display_order FROM images WHERE product_id = ? ORDER BY display_order ASC`,
+      [bookId],
+    )
+    const bookImages = images.map((image) => image.img_url)
+    bookDetail.images = bookImages
     return { bookDetail, categoryPath }
   } catch (error) {
     console.error('Error in findBookDetail:', error)

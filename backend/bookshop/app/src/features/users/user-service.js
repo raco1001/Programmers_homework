@@ -9,22 +9,20 @@ const { hashPassword } = require('../auth/auth-utils')
 const { generateUUID } = require('../../shared/utils/generateUUID')
 const { uuidToBinary } = require('../../shared/utils/convertIds')
 
-const registerUser = async (name, email, password) => {
-  console.log(
-    `[registerUser] 요청 받음!!!!!!!!!!!: ${name}, ${email}, ${password}`,
-  )
+const registerUser = async (email, password) => {
+  console.log(`[registerUser] 회원가입 요청 받음: ${email}, ${password}`)
   const existingUser = await findUserByEmail(email)
-  console.log(existingUser)
   if (existingUser !== null) {
     throw new Error('Email already exists.')
   }
-
+  console.log(`[registerUser] 이메일 중복 확인 완료: ${email}`)
   const { salt, hashedPassword } = hashPassword(password)
-  const uid = generateUUID() // Get UUID directly
+  const uid = generateUUID()
   const bid = uuidToBinary(uid)
-
-  const affectedRows = await createUser(bid, name, email, hashedPassword, salt)
-  console.log(`[registerUser] 영향받은 행 수: ${affectedRows}`)
+  console.log(
+    `[registerUser] 유저 생성 중: ${bid}, ${email}, ${hashedPassword}, ${salt}`,
+  )
+  const affectedRows = await createUser(bid, email, hashedPassword, salt)
   return affectedRows
 }
 

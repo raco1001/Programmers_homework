@@ -1,15 +1,15 @@
 const db = require('../../database/mariadb')
 const { binaryToUUID } = require('../../shared/utils/convertIds')
 
-const createUser = async (id, name, email, password, salt) => {
+const createUser = async (id, email, password, salt) => {
   try {
-    console.log(`유저 생성 중: ${id}, ${name}, ${email}, ${password}, ${salt}`)
+    console.log(`유저 생성 중: ${id}, ${email}, ${password}, ${salt}`)
     const result = await db.query(
-      'INSERT INTO users (id, name, email, password, salt) VALUES (?, ?, ?, ?, ?)',
-      [id, name, email, password, salt],
+      'INSERT INTO users (id, email, password, salt) VALUES (?, ?, ?, ?)',
+      [id, email, password, salt],
     )
     const affectedRows = result[0].affectedRows
-    console.log(`${affectedRows}`)
+    console.log(`${affectedRows}개의 행이 영향받았습니다.`)
     return affectedRows
   } catch (error) {
     throw error
@@ -17,20 +17,16 @@ const createUser = async (id, name, email, password, salt) => {
 }
 
 findUserById = async (userId) => {
-  const [rows] = await db.query(
-    'SELECT id, name, email FROM users WHERE id = ?',
-    [userId],
-  )
+  const [rows] = await db.query('SELECT id, email FROM users WHERE id = ?', [
+    userId,
+  ])
   return rows.length ? rows[0] : null
 }
 
 findUserByEmail = async (email) => {
-  const [rows] = await db.query(
-    'SELECT id, name, email FROM users WHERE email = ?',
-    [email],
-  )
-  console.log('rows', JSON.stringify(rows))
-  rows[0].id = binaryToUUID(rows[0].id)
+  const [rows] = await db.query('SELECT id, email FROM users WHERE email = ?', [
+    email,
+  ])
   return rows.length ? rows[0] : null
 }
 

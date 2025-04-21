@@ -10,7 +10,7 @@ const createUserAddress = async (address) => {
   return addAddressResult
 }
 
-const findUserAddresses = async () => {
+const returnUserAddresses = async () => {
   const userAddresses = await findAddresses()
   return userAddresses
 }
@@ -26,7 +26,7 @@ const deleteUserAddress = async (address) => {
 
 module.exports = {
   createUserAddress,
-  findUserAddresses,
+  returnUserAddresses,
   updateUserAddress,
   deleteUserAddress,
 }

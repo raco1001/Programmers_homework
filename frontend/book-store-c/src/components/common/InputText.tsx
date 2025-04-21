@@ -1,18 +1,37 @@
 import React, { ForwardedRef } from 'react'
+import { FieldValues, UseFormRegister } from 'react-hook-form'
 import styled from 'styled-components'
 import { Theme } from '../../style/theme'
-
-interface InputTextProps {
+interface InputTextProps extends React.InputHTMLAttributes<HTMLInputElement> {
   placeholder?: string
+  inputType?: 'text' | 'email' | 'password' | 'number'
+  register?: UseFormRegister<FieldValues>
 }
 
 const InputText = React.forwardRef(
-  (props: InputTextProps, ref: ForwardedRef<HTMLInputElement>) => {
-    return <InputTextStyle placeholder={props.placeholder} ref={ref} />
+  (
+    {
+      placeholder,
+      inputType = 'text',
+      onChange,
+      register,
+      ...props
+    }: InputTextProps,
+    ref: ForwardedRef<HTMLInputElement>,
+  ) => {
+    return (
+      <InputTextStyle
+        placeholder={placeholder}
+        ref={ref}
+        type={inputType}
+        onChange={onChange}
+        {...props}
+      />
+    )
   },
 )
 
-const InputTextStyle = styled.input.attrs({ type: 'text' })<{ theme: Theme }>`
+const InputTextStyle = styled.input<{ theme: Theme }>`
   padding: 0.25rem 0.75rem;
   border: 1px solid ${({ theme }) => theme.colors.border};
   color: ${({ theme }) => theme.colors.text};

@@ -1,5 +1,6 @@
 const cookieParser = require('cookie-parser')
 const express = require('express')
+const cors = require('cors')
 const errorHandler = require('./src/shared/middlewares/errorHandler')
 const app = express()
 app.use(cookieParser())
@@ -11,6 +12,7 @@ const orderRouter = require('./src/features/orders/order-router')
 const likeRouter = require('./src/features/likes/like-router')
 const paymentRouter = require('./src/features/payments/payment-router')
 const addressRouter = require('./src/features/addresses/addresses-router')
+const categoryRouter = require('./src/features/categories/category-router')
 // const deliveryRouter = require('../features/deliveries/deliveryRouter');
 // const reviewRouter = require('../features/reviews/review-router');
 
@@ -528,6 +530,14 @@ const fakerRouter = require('./tools/faker/faker')
 
 app.use(express.json())
 
+// Add CORS middleware
+app.use(
+  cors({
+    origin: 'http://localhost:3000', // Replace with your frontend URL
+    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+  }),
+)
+
 app.use('/auth', authRouter)
 app.use('/users', userRouter)
 app.use('/books', bookRouter)
@@ -535,6 +545,7 @@ app.use('/likes', likeRouter)
 app.use('/carts', cartRouter)
 app.use('/orders', orderRouter)
 app.use('/payments', paymentRouter)
+app.use('/categories', categoryRouter)
 // app.use('/deliveries', deliveryRouter);
 // app.use('/reviews', reviewRouter);
 

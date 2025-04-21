@@ -1,4 +1,4 @@
-const { requestTypes } = require('./order-entities')
+const { requestTypes } = require('./order-dto')
 const validateSchema = require('../../shared/middlewares/validateSchema')
 
 const validateOrder = () => {

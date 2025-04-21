@@ -8,15 +8,24 @@ interface ButtonProps {
   schema: ButtonSchema
   disabled?: boolean
   isLoading?: boolean
+  type?: 'button' | 'submit' | 'reset'
 }
 
-function Button({ children, schema, disabled, isLoading, size }: ButtonProps) {
+function Button({
+  children,
+  schema,
+  disabled,
+  isLoading,
+  size,
+  ...props
+}: ButtonProps) {
   return (
     <ButtonStyle
       schema={schema}
       disabled={disabled}
       isLoading={isLoading}
       size={size}
+      {...props}
     >
       {children}
     </ButtonStyle>

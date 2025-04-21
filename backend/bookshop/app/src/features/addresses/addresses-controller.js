@@ -1,6 +1,6 @@
 const {
   createUserAddress,
-  getUserAddresses,
+  returnUserAddresses,
   updateUserAddress,
   deleteUserAddress,
 } = require('./addresses-service')
@@ -23,7 +23,7 @@ const addUserAddress = async (req, res, next) => {
 
 const getUserAddresses = async (req, res, next) => {
   try {
-    const userAddress = await findUserAddresses()
+    const userAddress = await returnUserAddresses()
 
     if (!userAddress) {
       throw new Error('주소 조회 실패')

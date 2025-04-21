@@ -1,6 +1,6 @@
 const { getOrderItemsByUser, createOrder } = require('./order-service')
 
-const createOrder = async (req, res, next) => {
+const initOrder = async (req, res, next) => {
   try {
     const { userId } = req.userId
     const { orderItems, addressId, amount } = req.body
@@ -26,4 +26,4 @@ const getOrderItems = async (req, res, next) => {
   }
 }
 
-module.exports = { getOrderItems, createOrder }
+module.exports = { initOrder, getOrderItems }

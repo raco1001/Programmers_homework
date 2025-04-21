@@ -5,7 +5,7 @@ const createOrderSchema = joi.object({
   orderInfo: joi
     .object({
       orderItems: joi
-        .array({
+        .object({
           productId: joi.string().required(),
           count: joi.number().required(),
           totalPrice: joi.number().required(),
@@ -14,6 +14,7 @@ const createOrderSchema = joi.object({
     })
     .required(),
   addressId: joi.string().required(),
+  amount: joi.number().required(),
 })
 
 const updateOrderItemSchema = joi.object({
