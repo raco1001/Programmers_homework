@@ -24,6 +24,14 @@ const BooksEmptyStyle = styled.div<{ theme: Theme }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100%;
+  gap: 12px;
+  padding: 120px 0;
+
+  .icon {
+    svg {
+      font-size: 4rem;
+      fill: #ccc;
+    }
+  }
 `
+export default BooksEmpty

@@ -9,6 +9,7 @@ interface ButtonProps {
   disabled?: boolean
   isLoading?: boolean
   type?: 'button' | 'submit' | 'reset'
+  onClick?: () => void
 }
 
 function Button({

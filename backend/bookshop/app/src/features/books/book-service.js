@@ -10,10 +10,10 @@ const getBooks = async ({ params }) => {
   try {
     const {
       keyword = '',
-      category = 'ALL',
+      category_id = 'ALL',
       startDate,
       endDate,
-      page = 1,
+      currentPage = 1,
       limit = 8,
     } = params
 
@@ -30,30 +30,30 @@ const getBooks = async ({ params }) => {
       dateData.defaultEndDate = endDate
     }
 
-    const pageInt = parseInt(page, 10)
+    const currentPageInt = parseInt(currentPage, 10)
     const limitInt = parseInt(limit, 10)
 
     const books = await findBooks({
       keyword: keyword,
-      category: category,
+      category_id: category_id,
       startDate: dateData.defaultStartDate,
       endDate: dateData.defaultEndDate,
-      page: pageInt,
+      currentPage: currentPageInt,
       limit: limitInt,
     })
     const totalCount = await getBooksTotalCount({
       keyword: keyword,
-      category: category,
+      category_id: category_id,
       startDate: dateData.defaultStartDate,
       endDate: dateData.defaultEndDate,
     })
 
     return {
       books: books,
-      pagenations: {
+      pagenation: {
         totalCount: totalCount,
         totalPages: totalCount > 0 ? Math.ceil(totalCount / limitInt) : 1,
-        currentPage: pageInt,
+        currentPage: currentPageInt,
       },
     }
   } catch (error) {

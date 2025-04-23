@@ -3,12 +3,12 @@ const db = require('../../database/mariadb')
 const findBooks = async (params) => {
   const range = `AND created_at BETWEEN '${params.startDate}' AND '${params.endDate}'`
   const limit = params.limit
-  const page = params.page
-  const category = params.category
+  const currentPage = params.currentPage
+  const category_id = params.category_id
   const keyword = params.keyword || ''
 
   const finalCategory =
-    category === 'ALL' ? '' : `AND main_category = '${category.trim()}'`
+    category_id === 'ALL' ? '' : `AND category_id = '${category_id.trim()}'`
 
   const finalKeyword =
     keyword === '' ? '' : `WHERE title LIKE '%${keyword.trim()}%'`
@@ -27,6 +27,7 @@ const findBooks = async (params) => {
       ,b.summary
       ,a.likes
       ,a.price
+      ,a.category_id
       ,a.img_path
     FROM 
       (
@@ -35,6 +36,7 @@ const findBooks = async (params) => {
           ,likes
           ,price
           ,img_path
+          ,category_id
         FROM
           products
         WHERE product_table_name = 'books'
@@ -47,7 +49,7 @@ const findBooks = async (params) => {
       ${finalKeyword}
         ) b 
     ON a.id = b.id
-    LIMIT ${limit} OFFSET ${(page - 1) * limit}
+    LIMIT ${limit} OFFSET ${(currentPage - 1) * limit}
     `
   try {
     const [rows] = await db.query(query)
@@ -60,11 +62,11 @@ const findBooks = async (params) => {
 
 const getBooksTotalCount = async (params) => {
   const range = `AND created_at BETWEEN '${params.startDate}' AND '${params.endDate}'`
-  const category = params.category
+  const category_id = params.category_id
   const keyword = params.keyword || ''
 
   const finalCategory =
-    category === 'ALL' ? '' : `AND main_category = '${category}'`
+    category_id === 'ALL' ? '' : `AND main_category = '${category_id}'`
 
   const finalKeyword = keyword === '' ? '' : `WHERE title LIKE '%${keyword}%'`
 

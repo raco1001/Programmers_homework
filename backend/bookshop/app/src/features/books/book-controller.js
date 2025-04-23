@@ -5,12 +5,10 @@ const jwt = require('jsonwebtoken')
 
 const getBooksByRange = async (req, res, next) => {
   try {
+    console.log(req.query)
     const books = await getBooks({ params: req.query })
-
-    res.status(200).json({
-      status: 'success',
-      data: BooksReturns.fromRawData(books),
-    })
+    console.log(books)
+    res.status(200).json(BooksReturns.fromRawData(books))
   } catch (error) {
     console.error('Error in getBooksByRange controller:', error)
     next(error)

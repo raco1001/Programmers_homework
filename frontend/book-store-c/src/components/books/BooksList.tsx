@@ -1,22 +1,18 @@
 import { styled } from 'styled-components'
 import { IBook } from '../../models/book.model'
 import BookItem from './BookItem'
+import { IPagenation } from '../../models/pagenation.model'
 
-const dummyBook: IBook = {
-  id: 1,
-  category_id: '1',
-  title: '책 제목',
-  author: '저자',
-  summary: '책 요약',
-  likes: 1,
-  price: 10000,
-  img_path: 'https://via.placeholder.com/150',
+interface IBooksListProps {
+  books: IBook[]
+  pagenation: IPagenation
 }
 
-function BooksList() {
+function BooksList({ books, pagenation }: IBooksListProps) {
+  console.log('받은 데이터', books)
   return (
     <BooksListStyle>
-      <BookItem book={dummyBook} />
+      {books?.map((book) => <BookItem key={book.id} book={book} />)}
     </BooksListStyle>
   )
 }

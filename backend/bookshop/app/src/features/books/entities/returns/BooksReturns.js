@@ -23,7 +23,7 @@ class Pagination {
 class BooksReturns {
   constructor() {
     this.books = []
-    this.pagenations = new Pagination(0, 0, 0)
+    this.pagenation = new Pagination(0, 0, 0)
   }
 
   static fromRawData(rawData) {

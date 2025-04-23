@@ -3,5 +3,6 @@ import { httpClient } from './http'
 
 export const fetchCategory = async (): Promise<ICategory[]> => {
   const response = await httpClient.get('/categories')
+  console.log(response.data)
   return response.data
 }
