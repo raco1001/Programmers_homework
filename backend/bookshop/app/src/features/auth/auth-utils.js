@@ -49,12 +49,12 @@ const hashPassword = (password) => {
   }
 }
 
-const verifyPassword = (password, salt, hashedPassword) => {
+const verifyPassword = (password, salt, storedPassword) => {
   try {
-    const hash = crypto
+    const hashedPassword = crypto
       .pbkdf2Sync(password, salt, 1000, 64, 'sha512')
       .toString('base64')
-    return hash === hashedPassword
+    return hashedPassword === storedPassword
   } catch (error) {
     throw error
   }

@@ -1,3 +1,4 @@
+const { removeAllListeners } = require('../../database/mariadb')
 const {
   registerUser,
   getUser,
@@ -59,10 +60,10 @@ const authenticatUserByEmail = async (req, res, next) => {
 
 const resetPassword = async (req, res, next) => {
   try {
-    console.log('resetPassword', req.params.userId, req.body.password)
-    const userId = req.params.userId
+    const email = req.params.email
     const password = req.body.password
-    const result = await updateUserPassword(userId, password)
+    console.log('resetPassword', email, password)
+    const result = await updateUserPassword(email, password)
     if (result === 0) {
       return res
         .status(404)

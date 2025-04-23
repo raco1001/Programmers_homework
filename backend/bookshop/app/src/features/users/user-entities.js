@@ -5,6 +5,13 @@ const requestTypes = {
     email: Joi.string().email().required(),
     password: Joi.string().min(8).max(200).required(),
   }),
+  validateEmail: Joi.object({
+    email: Joi.string().email().required(),
+  }),
+  resetPassword: Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().min(8).max(200).required(),
+  }),
 }
 
 const responseTypes = {

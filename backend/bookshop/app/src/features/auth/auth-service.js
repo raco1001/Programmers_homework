@@ -8,15 +8,23 @@ const { binaryToUUID, uuidToBinary } = require('../../shared/utils/convertIds')
 const { AuthError } = require('./auth-utils')
 
 const authenticateUser = async (email, password) => {
-  const user = await findUserByEmail(email)
+  const [user] = await findUserByEmail(email)
+  console.log('authenticateUser \n', user)
 
-  if (!user || !verifyPassword(password, user[0].salt, user[0].password)) {
+  if (!user) {
     throw new AuthError('Invalid email or password.', 401)
   }
 
-  const userId = binaryToUUID(user[0].id)
-  const userName = user[0].name
-  const userEmail = user[0].email
+  const verifiedResult = verifyPassword(password, user.salt, user.password)
+
+  if (!verifiedResult) {
+    throw new AuthError('Invalid email or password.', 401)
+  }
+
+  const userBinaryId = user.id
+  const userId = binaryToUUID(userBinaryId)
+  const userName = user.name
+  const userEmail = user.email
 
   const {
     accessToken,
@@ -24,7 +32,7 @@ const authenticateUser = async (email, password) => {
     user: userData,
   } = generateTokens(userId, userName, userEmail)
 
-  const refreshTokenResult = await storeRefreshToken(user[0].id, refreshToken)
+  const refreshTokenResult = await storeRefreshToken(userBinaryId, refreshToken)
   if (refreshTokenResult[0].affectedRows !== 1) {
     throw new AuthError('Failed to store refresh token.', 500)
   }

@@ -7,7 +7,8 @@ const validateJoin = (req, res, next) => {
 
 const validateEmail = (req, res, next) => {
   console.log('validateEmail')
-  return validateSchema(requestTypes.email)(req, res, next)
+  console.log(req.body)
+  return validateSchema(requestTypes.validateEmail)(req, res, next)
 }
 
 module.exports = { validateJoin, validateEmail }

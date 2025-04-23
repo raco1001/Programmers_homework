@@ -20,6 +20,6 @@ router
 
 router.route('/validateEmail').post(validateEmail, authenticatUserByEmail)
 
-router.route('/reset/:userId').put(resetPassword)
+router.route('/reset/:email').put(resetPassword)
 
 module.exports = router

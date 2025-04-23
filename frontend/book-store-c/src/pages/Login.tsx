@@ -1,19 +1,13 @@
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
-import { signup } from '../api/auth.api'
+import { login } from '../api/auth.api'
 import Button from '../components/common/Button'
 import InputText from '../components/common/InputText'
 import Title from '../components/common/Title'
 import { useAlert } from '../hooks/useAlert'
-import { Theme } from '../style/theme'
-
-export interface SignupProps {
-  email: string
-  password: string
-}
-
-function Signup() {
+import { useAuthStore } from '../store/authStore'
+import { SignupProps, SignupStyle } from './Signup'
+function Login() {
   const {
     register,
     handleSubmit,
@@ -21,17 +15,25 @@ function Signup() {
   } = useForm<SignupProps>()
   const navigate = useNavigate()
   const showAlert = useAlert()
-  const onSubmit = (data: SignupProps) => {
-    signup(data).then((res) => {
-      showAlert('회원가입이 완료되었습니다.')
-      navigate('/login')
-    })
-  }
+  const { isLoggedIn, storeLogin, storeLogout } = useAuthStore()
 
-  console.log(errors)
+  const onSubmit = (data: SignupProps) => {
+    login(data).then(
+      (res) => {
+        storeLogin(res.token)
+        showAlert('로그인되었습니다.')
+        navigate('/')
+      },
+      (error) => {
+        showAlert('로그인에 실패했습니다.')
+      },
+    )
+  }
+  console.log(isLoggedIn)
+
   return (
     <>
-      <Title size="large">회원가입</Title>
+      <Title size="large">로그인</Title>
       <SignupStyle>
         <form onSubmit={handleSubmit(onSubmit)}>
           <fieldset>
@@ -45,6 +47,7 @@ function Signup() {
               <p className="error-text">이메일을 입력해주세요.</p>
             )}
           </fieldset>
+
           <fieldset>
             <label htmlFor="password">비밀번호</label>
             <InputText
@@ -58,11 +61,11 @@ function Signup() {
           </fieldset>
           <fieldset>
             <Button type="submit" size="medium" schema="primary">
-              회원가입
+              로그인
             </Button>
           </fieldset>
           <div className="info">
-            <Link to="/reset">비밀번호 초기화</Link>
+            <Link to="/reset">로그인</Link>
           </div>
         </form>
       </SignupStyle>
@@ -70,30 +73,4 @@ function Signup() {
   )
 }
 
-export const SignupStyle = styled.div<{ theme: Theme }>`
-  max-width: ${({ theme }) => theme.layout.width.small};
-  margin: 80px auto;
-
-  fieldset {
-    border: 0;
-    padding: 0 0 8px 0;
-    .error-text {
-      color: red;
-    }
-  }
-
-  input {
-    width: 100%;
-  }
-
-  button {
-    width: 100%;
-  }
-
-  .info {
-    text-align: center;
-    padding: 16px 0 0 0;
-  }
-`
-
-export default Signup
+export default Login

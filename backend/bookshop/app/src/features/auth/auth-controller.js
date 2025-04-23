@@ -16,12 +16,16 @@ const login = async (req, res, next) => {
       sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     })
+    res.cookie('token', tokens.accessToken, {
+      httpOnly: true,
+    })
 
-    res.status(200).json({
+    return res.status(200).json({
       status: 'success',
+      message: '로그인 성공',
+      token: tokens.accessToken,
       data: {
         user,
-        accessToken: tokens.accessToken,
       },
     })
   } catch (error) {

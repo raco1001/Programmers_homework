@@ -1,7 +1,7 @@
 const {
   findUserById,
   deleteUserById,
-  updateUserById,
+  updateUserByEmail,
   findUserByEmail,
   createUser,
 } = require('./user-repository')
@@ -27,7 +27,8 @@ const registerUser = async (email, password) => {
 }
 
 getUser = async (userId) => {
-  return await findUserById(userId)
+  const [user] = await findUserById(userId)
+  return user
 }
 
 getUserByEmail = async (email) => {
@@ -38,10 +39,12 @@ removeUser = async (userId) => {
   return await deleteUserById(userId)
 }
 
-updateUserPassword = async (userId, password) => {
-  const userBid = uuidToBinary(userId)
-  const { hashedPassword } = hashPassword(password)
-  return await updateUserById(userBid, hashedPassword)
+updateUserPassword = async (email, password) => {
+  const userEmail = email
+  const { salt, hashedPassword } = hashPassword(password)
+  console.log('updateUserPassword \n', hashedPassword, '\n', userEmail)
+  const updatedResult = await updateUserByEmail(userEmail, hashedPassword, salt)
+  return updatedResult
 }
 
 module.exports = {

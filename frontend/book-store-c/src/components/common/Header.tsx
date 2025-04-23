@@ -1,13 +1,20 @@
-import { FaRegUser, FaSignInAlt } from 'react-icons/fa'
+import {
+  FaRegUser,
+  FaShoppingBag,
+  FaShoppingCart,
+  FaSignInAlt,
+  FaSignOutAlt,
+} from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import { styled } from 'styled-components'
 import logo from '../../assets/images/bookstoreLogo-removebg-preview.png'
 import { useCategory } from '../../hooks/useCategory'
+import { useAuthStore } from '../../store/authStore'
 import { Theme } from '../../style/theme'
 import ThemeSwitcher from '../header/ThemeSwitcher'
-
 function Header() {
   const { category } = useCategory()
+  const { isLoggedIn, storeLogout } = useAuthStore()
 
   return (
     <HeaderStyle>
@@ -31,20 +38,46 @@ function Header() {
         <div className="right-section">
           <ThemeSwitcher />
           <nav className="auth">
-            <ul>
-              <li>
-                <Link to="/login">
-                  <FaSignInAlt />
-                  로그인
-                </Link>
-              </li>
-              <li>
-                <Link to="/signup">
-                  <FaRegUser />
-                  회원가입
-                </Link>
-              </li>
-            </ul>
+            {isLoggedIn && (
+              <ul>
+                <li>
+                  <Link to="/cart">
+                    <FaShoppingCart />
+                    장바구니
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/orderlist">
+                    <FaShoppingBag />
+                    주문내역
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/login">
+                    <button onClick={storeLogout}>
+                      <FaSignOutAlt />
+                      로그아웃
+                    </button>
+                  </Link>
+                </li>
+              </ul>
+            )}
+            {!isLoggedIn && (
+              <ul>
+                <li>
+                  <Link to="/login">
+                    <FaSignInAlt />
+                    로그인
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/signup">
+                    <FaRegUser />
+                    회원가입
+                  </Link>
+                </li>
+              </ul>
+            )}
           </nav>
         </div>
       </div>
@@ -107,12 +140,18 @@ const HeaderStyle = styled.header<{ theme: Theme }>`
       display: flex;
       gap: 16px;
 
-      li a {
+      li,
+      a,
+      button {
         font-size: 0.9rem;
         font-weight: 500;
         text-decoration: none;
         display: flex;
         align-items: center;
+        line-height: 1;
+        background-color: none;
+        border: none;
+        cursor: pointer;
         gap: 6px;
         color: ${({ theme }) => theme.colors.text};
 

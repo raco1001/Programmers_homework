@@ -35,10 +35,10 @@ deleteUserById = async (userId) => {
   return result.affectedRows
 }
 
-updateUserById = async (userId, password) => {
+updateUserByEmail = async (email, password, salt) => {
   const [result] = await db.query(
-    'UPDATE users SET password = ? WHERE id = ? ',
-    [password, userId],
+    'UPDATE users SET password = ?, salt = ? WHERE email = ? ',
+    [password, salt, email],
   )
   return result.affectedRows
 }
@@ -48,5 +48,5 @@ module.exports = {
   findUserById,
   findUserByEmail,
   deleteUserById,
-  updateUserById,
+  updateUserByEmail,
 }
