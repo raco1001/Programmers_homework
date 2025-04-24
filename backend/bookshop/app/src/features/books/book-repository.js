@@ -27,6 +27,7 @@ const findBooks = async (params) => {
       ,b.title
       ,b.author
       ,b.summary
+      ,b.format
       ,a.likes
       ,a.price
       ,a.main_category_id
@@ -46,7 +47,7 @@ const findBooks = async (params) => {
         ${range}
       ) a 
     JOIN  (  
-      SELECT id, title, author, summary 
+      SELECT id, title, author, summary, format 
       FROM books
       ${finalKeyword}
         ) b 
@@ -55,6 +56,7 @@ const findBooks = async (params) => {
     `
   try {
     const [rows] = await db.query(query)
+    console.log('rows++++++++++++++++++++++++++++++++++++++++++++', rows)
     return rows.length ? rows : []
   } catch (error) {
     console.error('Error in findBooks:', error)
@@ -101,19 +103,19 @@ const findBookDetail = async (bookId, userId) => {
     SELECT 
       p.id ,
       p.main_category_id AS category_id,
-      p.img_path AS img,
+      p.img_path,
       p.likes,
       p.price,
       b.title,
       b.category_id AS sub_category_id,
-      b.format,
       b.author,
       b.isbn,
       b.pages,
       b.summary,
       b.description,
       b.table_of_contents,
-      b.publication_date
+      b.publication_date,
+      b.format
       ${isLiked}
     FROM (
       SELECT
@@ -130,8 +132,8 @@ const findBookDetail = async (bookId, userId) => {
         id,
         author,
         title,
-        category_id,
         format,
+        category_id,
         isbn,
         pages,
         summary,
@@ -149,9 +151,14 @@ const findBookDetail = async (bookId, userId) => {
       ;[result] = await db.query(query, [userId, bookId, bookId, bookId])
     } else {
       ;[result] = await db.query(query, [bookId, bookId])
+      result[0].isLiked = 0
     }
 
     const bookDetail = result[0]
+    console.log(
+      'bookDetailREPOSITORY++++++++++++++++++++++++++++++++++++++++++++',
+      bookDetail,
+    )
 
     if (!bookDetail) return { bookDetail: null, categoryPath: [] }
 

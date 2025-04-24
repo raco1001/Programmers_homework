@@ -9,10 +9,9 @@ export const useBookDetail = (bookId: string | undefined) => {
   useEffect(() => {
     if (!bookId) return
     fetchBookDetail(bookId).then((book) => {
-      setBook(book)
+      setBook(book.bookDetail)
     })
   }, [bookId])
-
   return { book }
 }
 

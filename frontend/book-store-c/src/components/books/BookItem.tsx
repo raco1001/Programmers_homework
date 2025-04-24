@@ -18,6 +18,7 @@ function BookItem({ book, view }: IBookItemsProps) {
   if (book.summary.length > 20) {
     book.summary = book.summary.slice(0, 20) + '...'
   }
+
   return (
     <BookItemStyle view={view}>
       <Link to={`/books/${book.id}`}>

@@ -6,6 +6,10 @@ const jwt = require('jsonwebtoken')
 const getBooksByRange = async (req, res, next) => {
   try {
     const books = await getBooks({ params: req.query })
+    console.log(
+      'books+++++++++++++++++CONTROLLER+++++++++++++++++++++++++++',
+      books,
+    )
     res.status(200).json(BooksReturns.fromRawData(books))
   } catch (error) {
     console.error('Error in getBooksByRange controller:', error)
@@ -34,6 +38,10 @@ const getBookById = async (req, res, next) => {
         console.warn('Invalid token, proceeding without userId')
       }
     }
+    console.log(
+      'userId++++++++++++++++CONTROLLER+++++++++++++++++++++++++++',
+      userId,
+    )
     const bookDetail = await getBookDetail({ bookId, userId })
     console.log(
       'bookDetail++++++++++++++++CONTROLLER+++++++++++++++++++++++++++',

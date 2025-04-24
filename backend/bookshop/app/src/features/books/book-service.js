@@ -47,7 +47,6 @@ const getBooks = async ({ params }) => {
       startDate: dateData.defaultStartDate,
       endDate: dateData.defaultEndDate,
     })
-
     return {
       books: books,
       pagination: {
@@ -78,11 +77,6 @@ const getBookDetail = async ({ bookId, userId }) => {
 
     bookDetail.id = bookId
     bookDetail.categoryPath = categoryPath
-    console.log(
-      'bookDetail++++++++++++++++++++++++++++++++++++++++++++',
-      bookDetail,
-    )
-
     return bookDetail
   } catch (error) {
     console.error('Error in getBookDetail service:', error)

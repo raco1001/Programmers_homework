@@ -10,39 +10,44 @@ export interface IBook {
 }
 
 export interface IBookDetail extends IBook {
-  isLiked: boolean
+  isLiked: number
   images: string[]
   format: string
+  sub_category_id: string
   isbn: string
   pages: number
   description: string
   table_of_contents: string[] | null
   publication_date: string
+  categoryPath: string[]
 }
 
-//   {
-//     "bookDetail": {
-//         "id": "ebb7b7cd-0dee-11f0-910e-c277ba14597b",
-//         "category_id": 0,
-//         "title": "The Great Adventure",
-//         "author": "John Doe",
-//         "img": "https://picsum.photos/id/12/600/600",
-//         "likes": 10,
-//         "summary": "A thrilling journey of discovery.",
-//         "price": 20000,
-// \
-//         "sub_category_id": "4",
-//         "format": "Hardcover",
+/*
+{
+    "bookDetail": {
+    id: "ebb7d7e7-0dee-11f0-910e-c277ba14597b"
+    category_id: 1
+    title: "The History of the World"
+    author: "Jane Smith"
+    summary: "This book covers..."
+    likes: 5
+    price: 25000
+    img_path: "https://picsum.photos/id/11/600/600"
 
-//         "isbn": "978-3-16-148410-0",
-//         "pages": 350,
 
-//         "description": "This book explores...",
-//         "table_of_contents": null,
-//         "publication_date": "2025-01-05T00:00:00.000Z",
 
-//         "categoryPath": [
-//             "소설",
-//             "Fantasy"
-//         ]
-//     }
+    isLiked: 0
+    images: ['https://picsum.photos/id/11/600/600', 'https://picsum.photos/id/11/600/600', 'https://picsum.photos/id/11/600/600','https://picsum.photos/id/11/600/600', 'https://picsum.photos/id/11/600/600', 'https://picsum.photos/id/11/600/600']
+    format: "Paperback"
+    sub_category_id: "7"
+    isbn: "978-1-4028-9462-6"
+    pages: 500
+    description: "This book covers..."
+    table_of_contents: null
+    publication_date: "2025-02-27T00:00:00.000Z"
+    categoryPath: ['사회', 'History']
+
+
+  }
+}
+*/

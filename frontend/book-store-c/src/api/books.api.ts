@@ -13,11 +13,11 @@ interface FetchBooksResponse {
   pagination: IPagination
 }
 
-export const fetchBooks = async (
-  params: FetchBooksParams,
-): Promise<FetchBooksResponse> => {
+export const fetchBooks = async (params: FetchBooksParams) => {
   try {
-    const response = await httpClient.get('/books', { params: params })
+    const response = await httpClient.get<FetchBooksResponse>('/books', {
+      params: params,
+    })
     return response.data
   } catch (error) {
     return {
@@ -30,9 +30,15 @@ export const fetchBooks = async (
   }
 }
 
-export const fetchBookDetail = async (bookId: string): Promise<IBookDetail> => {
+interface FetchBookDetailResponse {
+  bookDetail: IBookDetail
+}
+
+export const fetchBookDetail = async (bookId: string) => {
   try {
-    const response = await httpClient.get<IBookDetail>(`/books/${bookId}`)
+    const response = await httpClient.get<FetchBookDetailResponse>(
+      `/books/${bookId}`,
+    )
     return response.data
   } catch (error) {
     throw error
