@@ -78,9 +78,9 @@ const findBooks = async () => {
     LIMIT ${limit} OFFSET ${(page - 1) * limit}
   `)
 
-  const pagenations = {}
-  pagenations.totalPages = books.length ? Math.ceil(books.length / 10) : 1
-  pagenations.currentPage = page
+  const pagination = {}
+  pagination.totalPages = books.length ? Math.ceil(books.length / 10) : 1
+  pagination.currentPage = page
 
   const [totalCount] = await db.query(`
     SELECT COUNT(*) AS count FROM books
@@ -89,11 +89,11 @@ const findBooks = async () => {
     ${finalKeyword}
   `)
   console.log(totalCount)
-  pagenations.totalCount = totalCount[0].count
+  pagination.totalCount = totalCount[0].count
 
   const response = {
     books: books,
-    pagenations: pagenations,
+    pagination: pagination,
   }
 
   const returnsDir = path.join(__dirname, '.', 'returns/books')

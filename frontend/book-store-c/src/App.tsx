@@ -7,6 +7,7 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import ResetPassword from './pages/ResetPassword'
 import Signup from './pages/Signup'
+import BookDetail from './pages/BookDetail'
 const router = createBrowserRouter([
   {
     path: '/',
@@ -22,15 +23,6 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <Books />
-      </Layout>
-    ),
-    errorElement: <Error />,
-  },
-  {
-    path: 'books/:id',
-    element: (
-      <Layout>
-        <div>도서 상세 페이지</div>
       </Layout>
     ),
     errorElement: <Error />,
@@ -71,11 +63,16 @@ const router = createBrowserRouter([
     ),
     errorElement: <Error />,
   },
+  {
+    path: 'books/:bookId',
+    element: (
+      <Layout>
+        <BookDetail />
+      </Layout>
+    ),
+  },
 ])
-
 function App() {
-  // return <Home />
-  // return <Detail />
   return (
     <BookStoreThemeProvider>
       <RouterProvider router={router} />

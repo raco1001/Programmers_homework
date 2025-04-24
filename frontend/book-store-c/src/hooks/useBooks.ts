@@ -2,19 +2,18 @@ import { useLocation, useSearchParams } from 'react-router-dom'
 import { QUERY_STRING } from '../constants/querystring'
 import { useEffect, useState } from 'react'
 import { IBook } from '../models/book.model'
-import { IPagenation } from '../models/pagenation.model'
+import { IPagination } from '../models/pagination.model'
 import { fetchBooks } from '../api/books.api'
 import { LIMIT } from '../constants/pagination'
 export const useBooks = () => {
   const location = useLocation()
 
   const [books, setBooks] = useState<IBook[]>([])
-  const [pagenation, setPagenation] = useState<IPagenation>({
+  const [pagination, setPagination] = useState<IPagination>({
     currentPage: 1,
-    totalPages: 1,
     totalCount: 0,
   })
-
+  const [isEmpty, setIsEmpty] = useState(false)
   useEffect(() => {
     const params = new URLSearchParams(location.search)
 
@@ -27,13 +26,18 @@ export const useBooks = () => {
         ? Number(params.get(QUERY_STRING.PAGE))
         : 1,
       limit: LIMIT,
-    }).then((data) => {
-      console.log('fetchBooks 호출 후', JSON.stringify(data))
-      setBooks(data.books)
-      setPagenation(data.pagenation)
+    }).then(({ books, pagination }) => {
+      setBooks(books)
+      setPagination(pagination)
+      setIsEmpty(books.length === 0)
     })
   }, [location.search])
-  console.log('fetchBooks 호출 후', books, pagenation)
 
-  return { books, pagenation }
+  console.log('Current State:', {
+    books: books.length,
+    pagination,
+    isEmpty,
+  })
+
+  return { books, pagination, isEmpty }
 }

@@ -5,9 +5,7 @@ const jwt = require('jsonwebtoken')
 
 const getBooksByRange = async (req, res, next) => {
   try {
-    console.log(req.query)
     const books = await getBooks({ params: req.query })
-    console.log(books)
     res.status(200).json(BooksReturns.fromRawData(books))
   } catch (error) {
     console.error('Error in getBooksByRange controller:', error)
@@ -17,33 +15,37 @@ const getBooksByRange = async (req, res, next) => {
 
 const getBookById = async (req, res, next) => {
   try {
-    const bookId = req.params.id
-
-    let userId = null
-    if (req.headers.authorization) {
-      const token = req.headers.authorization.split(' ')[1]
-      const decoded = jwt.verify(token, process.env.JWT_SECRET)
-      userId = decoded.id
-    }
-
-    if (!bookId) {
+    if (!req.params.bookId) {
       return res
         .status(400)
         .json({ status: 'error', message: 'Book ID is required.' })
     }
+    const bookId = req.params.bookId
 
-    const bookDetails = await getBookDetail({ bookId, userId })
+    let userId = undefined
+    const authHeader = req.headers.authorization
 
-    if (!bookDetails.bookDetail) {
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1]
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        userId = decoded.id
+      } catch (err) {
+        console.warn('Invalid token, proceeding without userId')
+      }
+    }
+    const bookDetail = await getBookDetail({ bookId, userId })
+    console.log(
+      'bookDetail++++++++++++++++CONTROLLER+++++++++++++++++++++++++++',
+      bookDetail,
+    )
+    if (!bookDetail) {
       return res
         .status(404)
         .json({ status: 'error', message: 'Book not found.' })
     }
 
-    res.status(200).json({
-      status: 'success',
-      data: BookDetailReturn.fromRawData(bookDetails),
-    })
+    res.status(200).json({ bookDetail: bookDetail })
   } catch (error) {
     console.error('Error in getBookById controller:', error)
     next(error)

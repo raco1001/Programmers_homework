@@ -6,27 +6,39 @@ import Pagination from '../components/books/Pagination'
 import Title from '../components/common/Title'
 import BooksEmpty from '../components/books/BooksEmpty'
 import { useBooks } from '../hooks/useBooks'
+
 function Books() {
-  const { books, pagenation } = useBooks()
+  const { books, pagination, isEmpty } = useBooks()
 
   return (
     <>
       <Title size="large">도서 검색 결과</Title>
       <BooksStyle>
-        <BooksFilter />
-        <BooksViewSwitcher />
-        <BooksList books={books} pagenation={pagenation} />
-        <BooksEmpty />
-        <BooksFilter />
-        <Pagination />
+        <div className="books-header">
+          <BooksFilter />
+          <BooksViewSwitcher />
+        </div>
+        <div>
+          {!isEmpty && <BooksList books={books} />}
+          {isEmpty && <BooksEmpty />}
+          {!isEmpty && <Pagination pagination={pagination} />}
+        </div>
       </BooksStyle>
     </>
   )
 }
 
 const BooksStyle = styled.div`
-  width: 100%;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 20px 0;
+
+  .books-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 `
 
 export default Books

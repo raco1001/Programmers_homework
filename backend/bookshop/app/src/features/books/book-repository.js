@@ -8,7 +8,9 @@ const findBooks = async (params) => {
   const keyword = params.keyword || ''
 
   const finalCategory =
-    category_id === 'ALL' ? '' : `AND category_id = '${category_id.trim()}'`
+    category_id === 'ALL'
+      ? ''
+      : `AND main_category_id = '${category_id.trim()}'`
 
   const finalKeyword =
     keyword === '' ? '' : `WHERE title LIKE '%${keyword.trim()}%'`
@@ -27,7 +29,7 @@ const findBooks = async (params) => {
       ,b.summary
       ,a.likes
       ,a.price
-      ,a.category_id
+      ,a.main_category_id
       ,a.img_path
     FROM 
       (
@@ -36,7 +38,7 @@ const findBooks = async (params) => {
           ,likes
           ,price
           ,img_path
-          ,category_id
+          ,main_category_id
         FROM
           products
         WHERE product_table_name = 'books'
@@ -97,13 +99,13 @@ const findBookDetail = async (bookId, userId) => {
     : ''
   const query = `
     SELECT 
-      p.id as bookBid,
-      p.main_category AS mainCategory,
+      p.id ,
+      p.main_category_id AS category_id,
       p.img_path AS img,
       p.likes,
       p.price,
       b.title,
-      b.category_id AS categoryId,
+      b.category_id AS sub_category_id,
       b.format,
       b.author,
       b.isbn,
@@ -116,7 +118,7 @@ const findBookDetail = async (bookId, userId) => {
     FROM (
       SELECT
         id,
-        main_category,
+        main_category_id,
         likes,
         price,
         img_path
@@ -126,10 +128,10 @@ const findBookDetail = async (bookId, userId) => {
     JOIN (
       SELECT
         id,
+        author,
         title,
         category_id,
         format,
-        author,
         isbn,
         pages,
         summary,
@@ -158,7 +160,7 @@ const findBookDetail = async (bookId, userId) => {
       WITH RECURSIVE CategoryPath AS (
           SELECT id, parent_id, name
           FROM categories
-          WHERE id = ${bookDetail.categoryId}
+          WHERE id = ${bookDetail.sub_category_id}
 
           UNION ALL
           

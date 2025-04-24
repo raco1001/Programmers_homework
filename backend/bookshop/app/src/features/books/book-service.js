@@ -50,9 +50,8 @@ const getBooks = async ({ params }) => {
 
     return {
       books: books,
-      pagenation: {
+      pagination: {
         totalCount: totalCount,
-        totalPages: totalCount > 0 ? Math.ceil(totalCount / limitInt) : 1,
         currentPage: currentPageInt,
       },
     }
@@ -71,15 +70,20 @@ const getBookDetail = async ({ bookId, userId }) => {
     const bookBid = uuidToBinary(bookId)
     const userBid = userId ? uuidToBinary(userId) : null
 
-    const bookDetails = await findBookDetail(bookBid, userBid)
+    const { bookDetail, categoryPath } = await findBookDetail(bookBid, userBid)
 
-    if (!bookDetails.bookDetail) {
+    if (!bookDetail) {
       return { bookDetail: null, categoryPath: [] }
     }
 
-    bookDetails.bookDetail.id = bookId
+    bookDetail.id = bookId
+    bookDetail.categoryPath = categoryPath
+    console.log(
+      'bookDetail++++++++++++++++++++++++++++++++++++++++++++',
+      bookDetail,
+    )
 
-    return bookDetails
+    return bookDetail
   } catch (error) {
     console.error('Error in getBookDetail service:', error)
     throw error

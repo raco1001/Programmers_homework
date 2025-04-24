@@ -23,17 +23,17 @@ class Pagination {
 class BooksReturns {
   constructor() {
     this.books = []
-    this.pagenation = new Pagination(0, 0, 0)
+    this.pagination = new Pagination(0, 0, 0)
   }
 
   static fromRawData(rawData) {
     const result = new BooksReturns()
 
-    if (rawData.pagenations) {
-      result.pagenations = new Pagination(
-        rawData.pagenations.totalPages,
-        rawData.pagenations.currentPage,
-        rawData.pagenations.totalCount,
+    if (rawData.pagination) {
+      result.pagination = new Pagination(
+        rawData.pagination.totalPages,
+        rawData.pagination.currentPage,
+        rawData.pagination.totalCount,
       )
     }
 
@@ -74,7 +74,7 @@ const paginationSchema = Joi.object({
 
 const booksReturnsSchema = Joi.object({
   books: Joi.array().items(bookSchema),
-  pagenations: paginationSchema,
+  pagination: paginationSchema,
 })
 
 module.exports = {
