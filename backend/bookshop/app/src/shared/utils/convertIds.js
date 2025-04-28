@@ -5,10 +5,7 @@ const uuidToBinary = (uuidStr) => {
 }
 
 const binaryToUUID = (binary) => {
-  console.log('Buffer:', binary)
-  console.log('Buffer 길이:', binary.length)
   const uuidStr = stringify(binary)
-  console.log('UUID:', uuidStr)
   return uuidStr
 }
 

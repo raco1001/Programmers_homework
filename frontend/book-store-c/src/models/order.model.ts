@@ -1,9 +1,28 @@
+import { ICartItem } from './cart.model'
+
 export interface IOrder {
-  id: string
+  orderId: string
+  createdAt: string
   address: string
-  receiver_name: string
-  receiver_phone: string
-  total_price: number
-  created_at: string
-  updated_at: string
+  receiver: string
+  contact: string
+  bookTitle: string
+  totalPrice: number
+  totalQuantity: number
+  status: string
+}
+
+export interface IOrderSheet {
+  items: ICartItem[]
+  totalQuantity: number
+  totalPrice: number
+  firstBookTitle: string
+  delivery: Delivery
+}
+
+export interface Delivery {
+  address: string
+  zipCode: string
+  receiver: string
+  contact: string
 }

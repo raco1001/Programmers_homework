@@ -17,6 +17,17 @@ const insertLike = async (userId, productId) => {
 
   return result.affectedRows
 }
+
+const updateLike = async (productId, amount) => {
+  const targetValue = amount > 0 ? 'likes + 1' : 'likes - 1'
+  const [result] = await db.query(
+    `UPDATE products SET likes = ${targetValue} WHERE id = ?`,
+    [productId],
+  )
+  console.log('updateLike', result.affectedRows)
+  return result.affectedRows
+}
+
 const deleteLike = async (userId, productId) => {
   const [result] = await db.query(
     'DELETE FROM user_likes WHERE user_id = ? AND product_id = ?',
@@ -25,4 +36,4 @@ const deleteLike = async (userId, productId) => {
   return result.affectedRows
 }
 
-module.exports = { findLikes, insertLike, deleteLike }
+module.exports = { findLikes, insertLike, deleteLike, updateLike }

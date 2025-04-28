@@ -8,9 +8,8 @@ const {
 const getCartItems = async (req, res, next) => {
   try {
     const userId = req.userId
-    console.log(userId)
     const items = await getCartItemsByUserId(userId)
-    res.status(200).json({ status: 'success', data: items })
+    res.status(200).json(items)
   } catch (err) {
     next(err)
   }
@@ -18,11 +17,9 @@ const getCartItems = async (req, res, next) => {
 
 const addToCart = async (req, res, next) => {
   try {
-    console.log('addToCart', req.userId)
     const userId = req.userId
-    console.log('userId', userId)
-    const { productId, count } = req.body
-    await addCartItem(userId, productId, count)
+    const { bookId, quantity } = req.body
+    await addCartItem(userId, bookId, quantity)
     res
       .status(201)
       .json({ status: 'success', message: '장바구니에 상품 추가 완료' })
@@ -51,7 +48,8 @@ const updateCartItem = async (req, res, next) => {
 const deleteFromCart = async (req, res, next) => {
   try {
     const userId = req.userId
-    const { productId } = req.body
+    const productId = req.params.productId
+    console.log('deleteFromCart++++++++++++++', userId, productId)
     await removeCartItem(userId, productId)
     res
       .status(200)

@@ -1,4 +1,9 @@
-const { findLikes, insertLike, deleteLike } = require('./like-repository')
+const {
+  findLikes,
+  insertLike,
+  deleteLike,
+  updateLike,
+} = require('./like-repository')
 const {
   uuidToBinary,
   binaryToUUID,
@@ -18,20 +23,34 @@ getLike = async (userId, productId) => {
 createLike = async (userId, productId) => {
   const userBid = uuidToBinary(userId)
   const productBid = uuidToBinary(productId)
-  const result = await insertLike(userBid, productBid)
-
-  return result
+  const createdResult = await insertLike(userBid, productBid)
+  if (createdResult === 0) {
+    return 0
+  }
+  const updatedResult = await updateLike(productBid, 1)
+  if (updatedResult === 0) {
+    return 0
+  }
+  return 1
 }
 
 deleteLikeIfExists = async (userId, productId) => {
-  const exists = await findLikes(userId, productId)
+  const userBid = uuidToBinary(userId)
+  const productBid = uuidToBinary(productId)
+  const exists = await findLikes(userBid, productBid)
   if (!exists) {
     return 0
   }
 
-  const result = await deleteLike(userId, productId)
-
-  return result
+  const result = await deleteLike(userBid, productBid)
+  if (result === 0) {
+    return 0
+  }
+  const updatedResult = await updateLike(productBid, -1)
+  if (updatedResult === 0) {
+    return 0
+  }
+  return 1
 }
 
 module.exports = {

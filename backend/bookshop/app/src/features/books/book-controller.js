@@ -38,15 +38,8 @@ const getBookById = async (req, res, next) => {
         console.warn('Invalid token, proceeding without userId')
       }
     }
-    console.log(
-      'userId++++++++++++++++CONTROLLER+++++++++++++++++++++++++++',
-      userId,
-    )
     const bookDetail = await getBookDetail({ bookId, userId })
-    console.log(
-      'bookDetail++++++++++++++++CONTROLLER+++++++++++++++++++++++++++',
-      bookDetail,
-    )
+
     if (!bookDetail) {
       return res
         .status(404)

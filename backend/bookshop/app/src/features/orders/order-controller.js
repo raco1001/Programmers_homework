@@ -2,10 +2,17 @@ const { getOrderItemsByUser, createOrder } = require('./order-service')
 
 const initOrder = async (req, res, next) => {
   try {
-    const { userId } = req.userId
-    const { orderItems, addressId, amount } = req.body
-    const orderId = await createOrder(userId, orderItems, addressId, amount)
-
+    const userId = req.userId
+    const { items, delivery, totalPrice, totalQuantity, firstBookTitle } =
+      req.body
+    const orderId = await createOrder(
+      userId,
+      items,
+      delivery,
+      totalPrice,
+      totalQuantity,
+      firstBookTitle,
+    )
     res
       .status(201)
       .json({ status: 'success', orderId: orderId, message: '주문 생성 완료' })

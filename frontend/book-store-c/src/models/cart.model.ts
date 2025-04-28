@@ -1,9 +1,13 @@
-export interface ICart {
-  id: string
-  book_id: string
+export interface ICartItem {
+  productId: string
+  quantity: number
+}
+
+export interface ICart extends ICartItem {
   title: string
   price: number
-  quantity: number
-  created_at: string
-  updated_at: string
+  summary: string
+  img_path: string
+  author: string
+  pages: number
 }

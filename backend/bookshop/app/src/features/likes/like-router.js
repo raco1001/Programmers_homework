@@ -4,7 +4,7 @@ const { addLike, removeLike } = require('./like-controller')
 const { validateAccessToken } = require('./../auth/auth-middleware')
 
 router
-  .route('/')
+  .route('/:bookId')
   .post(validateAccessToken, addLike)
   .delete(validateAccessToken, removeLike)
 

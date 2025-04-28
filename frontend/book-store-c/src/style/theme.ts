@@ -9,7 +9,7 @@ export type ColorKey =
 
 export type HeadingSize = 'large' | 'medium' | 'small'
 export type ButtonSize = 'large' | 'medium' | 'small'
-export type ButtonSchema = 'primary' | 'normal'
+export type ButtonSchema = 'primary' | 'normal' | 'like'
 export type BorderRadius = 'default'
 export type LayoutWidth = 'large' | 'medium' | 'small'
 export interface Theme {
@@ -85,6 +85,10 @@ export const light: Theme = {
     normal: {
       color: 'black',
       backgroundColor: 'lightgray',
+    },
+    like: {
+      color: 'white',
+      backgroundColor: 'coral',
     },
   },
   borderRadius: {

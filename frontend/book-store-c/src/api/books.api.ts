@@ -44,3 +44,29 @@ export const fetchBookDetail = async (bookId: string) => {
     throw error
   }
 }
+
+export const likeBook = async (bookId: string) => {
+  try {
+    const response = await httpClient.post(`/likes/${bookId}`)
+    if (!response.data) {
+      throw new Error('No data received from likeBook API')
+    }
+    return response.data
+  } catch (error) {
+    console.error('Error in likeBook:', error)
+    throw error
+  }
+}
+
+export const unlikeBook = async (bookId: string) => {
+  try {
+    const response = await httpClient.delete(`/likes/${bookId}`)
+    if (!response.data) {
+      throw new Error('No data received from unlikeBook API')
+    }
+    return response.data
+  } catch (error) {
+    console.error('Error in unlikeBook:', error)
+    throw error
+  }
+}

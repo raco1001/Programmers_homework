@@ -6,7 +6,9 @@ import { IBookDetail } from '../models/book.model'
 import { formatNumber, formatDate } from '../utils/format'
 import { Link } from 'react-router-dom'
 import { Theme } from '../style/theme'
-import { FaHeart } from 'react-icons/fa'
+import EllipsisBox from '../components/common/EllipsisBox'
+import LikeButton from '../components/bookDetail/LikeButton'
+import AddToCart from '../components/bookDetail/AddToCart'
 const bookInfoList = [
   {
     label: '카테고리',
@@ -14,7 +16,9 @@ const bookInfoList = [
     filter: (book: IBookDetail) => {
       return (
         <Link to={`/books?category_id=${book.category_id}`}>
-          {book.categoryPath.join(' > ')}
+          {Array.isArray(book.categoryPath) && book.categoryPath.length > 0
+            ? book.categoryPath.join(' > ')
+            : '카테고리 없음'}
         </Link>
       )
     },
@@ -45,44 +49,44 @@ const bookInfoList = [
 
 function BookDetail() {
   const { bookId } = useParams()
-  const { book } = useBookDetail(bookId)
-  if (!book) return null
+  const { bookDetail, likeToggle } = useBookDetail(bookId)
+  if (!bookDetail) return null
 
-  const categoryName = book.categoryPath.reduce((acc, category) => {
-    const arrow = acc ? ' > ' : ''
-    return acc + `${arrow}${category}`
-  }, '')
   return (
     <BookDetailStyle>
       <header className="header">
         <div className="img">
-          <img src={book.img_path} alt={book.title} />
+          <img src={bookDetail.img_path} alt={bookDetail.title} />
         </div>
         <div className="info">
           <Title size="large" color="text">
-            {book.title}
+            {bookDetail.title}
           </Title>
           {bookInfoList.map((item) => (
             <dl key={item.key}>
               <dt>{item.label}</dt>
               <dd>
                 {item.filter
-                  ? item.filter(book)
-                  : book[item.key as keyof IBookDetail]}
+                  ? item.filter(bookDetail)
+                  : bookDetail[item.key as keyof IBookDetail]}
               </dd>
             </dl>
           ))}
-          <p className="summary">{book.summary}</p>
+          <p className="summary">{bookDetail.summary}</p>
           <div className="likes">
-            <FaHeart />
-            <p>{book.likes}</p>
+            <LikeButton bookDetail={bookDetail} onClick={likeToggle} />
           </div>
           <div className="add-cart">
-            <button>장바구니 추가</button>
+            <AddToCart bookDetail={bookDetail} />
           </div>
         </div>
       </header>
-      <div className="content"></div>
+      <div className="content">
+        <Title size="medium">상세 설명</Title>
+        <EllipsisBox lineLimit={2}>{bookDetail.description}</EllipsisBox>
+        <Title size="medium">목차</Title>
+        <EllipsisBox lineLimit={2}>{bookDetail.table_of_contents}</EllipsisBox>
+      </div>
     </BookDetailStyle>
   )
 }
@@ -120,6 +124,9 @@ const BookDetailStyle = styled.div<{ theme: Theme }>`
         }
       }
     }
+  }
+  .content {
+    white-space: pre-line;
   }
 `
 

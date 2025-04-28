@@ -20,7 +20,7 @@ function Signup() {
     formState: { errors },
   } = useForm<SignupProps>()
   const navigate = useNavigate()
-  const showAlert = useAlert()
+  const { showAlert } = useAlert()
   const onSubmit = (data: SignupProps) => {
     signup(data).then((res) => {
       showAlert('회원가입이 완료되었습니다.')

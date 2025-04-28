@@ -56,7 +56,6 @@ const findBooks = async (params) => {
     `
   try {
     const [rows] = await db.query(query)
-    console.log('rows++++++++++++++++++++++++++++++++++++++++++++', rows)
     return rows.length ? rows : []
   } catch (error) {
     console.error('Error in findBooks:', error)
@@ -155,10 +154,6 @@ const findBookDetail = async (bookId, userId) => {
     }
 
     const bookDetail = result[0]
-    console.log(
-      'bookDetailREPOSITORY++++++++++++++++++++++++++++++++++++++++++++',
-      bookDetail,
-    )
 
     if (!bookDetail) return { bookDetail: null, categoryPath: [] }
 

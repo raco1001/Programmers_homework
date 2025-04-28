@@ -14,6 +14,7 @@ router
   .get(validateAccessToken, getCartItems)
   .post(validateAccessToken, addToCart)
   .put(validateAccessToken, updateCartItem)
-  .delete(validateAccessToken, deleteFromCart)
+
+router.route('/:productId').delete(validateAccessToken, deleteFromCart)
 
 module.exports = router
