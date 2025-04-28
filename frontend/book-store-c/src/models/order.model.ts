@@ -6,7 +6,7 @@ export interface IOrder {
   address: string
   receiver: string
   contact: string
-  bookTitle: string
+  firstTitle: string
   totalPrice: number
   totalQuantity: number
   status: string
@@ -16,7 +16,7 @@ export interface IOrderSheet {
   items: ICartItem[]
   totalQuantity: number
   totalPrice: number
-  firstBookTitle: string
+  firstProductId: string
   delivery: Delivery
 }
 
@@ -25,4 +25,17 @@ export interface Delivery {
   zipCode: string
   receiver: string
   contact: string
+}
+export interface IOrderItem {
+  orderItemId: string
+  productId: string
+  title: string
+  author: string
+  imgPath: string
+  totalPrice: number
+  totalQuantity: number
+}
+
+export interface IOrderListItems extends IOrder {
+  detail?: IOrderItem[]
 }

@@ -5,4 +5,8 @@ const validateOrder = () => {
   return validateSchema(createOrder)
 }
 
-module.exports = { validateOrder }
+const validateGetOrder = () => {
+  return validateSchema(getOrder)
+}
+
+module.exports = { validateOrder, validateGetOrder }

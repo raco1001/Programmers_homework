@@ -55,7 +55,7 @@ function Cart() {
       items: checkedItems,
       totalQuantity: totalQuantity,
       totalPrice: totalPrice,
-      firstBookTitle: carts[0].title,
+      firstProductId: checkedItems[0].productId,
     }
     showConfirm('주문하시겠습니까?', () => {
       navigate('/order', { state: orderData })
@@ -134,6 +134,8 @@ export const CartStyle = styled.div<{ theme: Theme }>`
     display: flex;
     flex-direction: column;
     gap: 24px;
+    justify-content: center;
+    padding: 16px 0 0 0;
   }
 
   .order-info {

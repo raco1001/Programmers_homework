@@ -16,7 +16,11 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "jsxImportSource": "react",
-    "types": ["react", "react-dom", "react-icons", "styled-components"]
+    "types": ["react", "react-dom", "react-icons", "styled-components"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

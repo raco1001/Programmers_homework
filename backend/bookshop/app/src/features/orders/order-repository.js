@@ -122,17 +122,64 @@ const deleteCartItems = async (conn, userBid, modifiedItems) => {
   }
 }
 
-const findOrderItemsByUser = async (uid, pageSize, pageNumber) => {
+const findOrdersByUser = async (userId, pageSize = 10, pageNumber = 1) => {
   try {
+    console.log(pageSize, pageNumber)
     const offset = (pageNumber - 1) * pageSize
     const query = `
-        SELECT oi.count, p.id as product_id, p.product_table_name, p.price, p.img_path
+      SELECT 
+        o.id as orderId
+        , o.status
+        , o.totalPrice
+        , o.totalQuantity
+        , b.title as firstTitle
+        , a.address_line1 as address
+        , a.recipient_name as receiver
+        , a.phone_number as contact
+        , o.created_at as createdAt
+      FROM (
+        SELECT 
+        id
+        , status
+        , address_id
+        , amount as totalPrice
+        , total_quantity as totalQuantity
+        , first_id
+        , created_at 
+        FROM orders
+        WHERE user_id = ?
+      ) o 
+      JOIN books b ON o.first_id = b.id
+      JOIN addresses a ON o.address_id = a.id
+      
+      ORDER BY o.created_at DESC
+      LIMIT ? OFFSET ?
+    `
+    const [rows] = await db.query(query, [userId, pageSize, offset])
+    return rows
+  } catch (err) {
+    throw new Error('주문 아이템 조회 실패')
+  }
+}
+
+const findOrderItemsByOrderId = async (orderId) => {
+  try {
+    const query = `
+        SELECT 
+          oi.id as orderItemId
+          , p.id as productId
+          , b.title as title
+          , b.author as author
+          , p.price as totalPrice
+          , oi.count as totalQuantity
+          , p.img_path as imgPath
         FROM order_items oi
         JOIN products p ON oi.product_id = p.id
-        WHERE oi.user_id = ?
-        LIMIT ? OFFSET  ?
+        JOIN books b ON p.id = b.id
+        WHERE oi.order_id = ?
+        ORDER BY oi.id
     `
-    const [rows] = await db.query(query, [uid, pageSize, offset])
+    const [rows] = await db.query(query, [orderId])
     return rows
   } catch (err) {
     throw new Error('주문 조회 실패')
@@ -143,7 +190,8 @@ module.exports = {
   insertAddress,
   insertOrder,
   insertOrderItems,
-  findOrderItemsByUser,
+  findOrdersByUser,
+  findOrderItemsByOrderId,
   findAddress,
   deleteCartItems,
 }

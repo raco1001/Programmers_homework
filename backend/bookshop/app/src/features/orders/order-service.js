@@ -1,13 +1,14 @@
 const {
   insertOrder,
   insertOrderItems,
-  findOrderItemsByUser,
-  findAddress,
+  findOrdersByUser,
+  findOrderItemsByOrderId,
   insertAddress,
   deleteCartItems,
 } = require('./order-repository')
 const { uuidToBinary, binaryToUUID } = require('../../shared/utils/convertIds')
 const { generateUUID } = require('../../shared/utils/generateUUID')
+const { getStatus } = require('../../shared/utils/getStatus')
 const db = require('../../database/mariadb')
 
 const createOrder = async (
@@ -16,7 +17,7 @@ const createOrder = async (
   delivery,
   totalPrice,
   totalQuantity,
-  firstBookTitle,
+  firstProductId,
 ) => {
   const priceSum = items.reduce((acc, item) => acc + item.priceSum, 0)
   if (priceSum !== totalPrice) {
@@ -44,7 +45,7 @@ const createOrder = async (
       addressBid,
       totalPrice,
       totalQuantity,
-      firstBookTitle,
+      firstProductId,
     )
 
     if (createdOrderResult !== 1) {
@@ -66,6 +67,10 @@ const createOrder = async (
       modifiedItems,
     )
 
+    if (createdOrderItemsResult !== modifiedItems.length) {
+      throw new Error('주문 아이템 생성 실패')
+    }
+
     await deleteCartItems(conn, userBid, modifiedItems)
     await conn.commit()
 
@@ -78,12 +83,40 @@ const createOrder = async (
   }
 }
 
-const getOrderItemsByUser = async (userId, pageSize, pageNumber) => {
+const getOrdersByUser = async (userId, pageSize, pageNumber) => {
   const userBid = uuidToBinary(userId)
-  return await findOrderItemsByUser(userBid, pageSize, pageNumber)
+  const orders = await findOrdersByUser(userBid, pageSize, pageNumber)
+  pageSize = pageSize ? pageSize : 10
+  pageNumber = pageNumber ? pageNumber : 1
+
+  if (orders.length > 0) {
+    orders.forEach(async (order) => {
+      order.orderId = binaryToUUID(order.orderId)
+      order.status = getStatus(order.status)
+    })
+  }
+  console.log(orders)
+  return orders
+}
+
+const getOrderItemsByOrderId = async (userId, orderId) => {
+  const userBid = uuidToBinary(userId)
+  const orderBid = uuidToBinary(orderId)
+
+  const orderItems = await findOrderItemsByOrderId(orderBid)
+
+  if (orderItems.length > 0) {
+    orderItems.forEach(async (orderItem) => {
+      orderItem.orderItemId = binaryToUUID(orderItem.orderItemId)
+      orderItem.productId = binaryToUUID(orderItem.productId)
+    })
+  }
+
+  return orderItems
 }
 
 module.exports = {
-  getOrderItemsByUser,
+  getOrdersByUser,
   createOrder,
+  getOrderItemsByOrderId,
 }
