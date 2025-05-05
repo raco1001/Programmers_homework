@@ -1,7 +1,8 @@
+import { fetchCategory } from '@/api/category.api'
+import { ICategory } from '@/models/category.model'
 import { useEffect, useState } from 'react'
-import { fetchCategory } from '../api/category.api'
-import { ICategory } from '../models/category.model'
-import { useLocation, useParams } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
+
 export const useCategory = () => {
   const location = useLocation()
   const [category, setCategory] = useState<ICategory[]>([])
@@ -31,7 +32,7 @@ export const useCategory = () => {
   useEffect(() => {
     fetchCategory().then((categories) => {
       if (!categories) return
-      const categoryWithAll = [{ id: null, name: '전체' }, ...categories]
+      const categoryWithAll = [{ id: null, name: '전체' }, ...categories] as ICategory[]
       setCategory(categoryWithAll)
       setActive()
     })

@@ -1,10 +1,12 @@
-import { useLocation, useSearchParams } from 'react-router-dom'
-import { QUERY_STRING } from '../constants/querystring'
 import { useEffect, useState } from 'react'
-import { IBook } from '../models/book.model'
-import { IPagination } from '../models/pagination.model'
+import { useLocation } from 'react-router-dom'
 import { fetchBooks } from '../api/books.api'
 import { LIMIT } from '../constants/pagination'
+import { QUERY_STRING } from '../constants/querystring'
+import { IBook } from '../models/book.model'
+import { IPagination } from '../models/pagination.model'
+
+
 export const useBooks = () => {
   const location = useLocation()
 
@@ -14,6 +16,7 @@ export const useBooks = () => {
     totalCount: 0,
   })
   const [isEmpty, setIsEmpty] = useState(false)
+
   useEffect(() => {
     const params = new URLSearchParams(location.search)
 
@@ -31,6 +34,7 @@ export const useBooks = () => {
       setPagination(pagination)
       setIsEmpty(books.length === 0)
     })
+
   }, [location.search])
 
   console.log('Current State:', {
@@ -41,3 +45,35 @@ export const useBooks = () => {
 
   return { books, pagination, isEmpty }
 }
+
+// export const useBooks = () => {
+//   const location = useLocation()
+
+//   const params = new URLSearchParams(location.search)
+
+//   const { data: booksData, isLoading: isBooksLoading } =
+
+//     useQuery({
+//       queryKey: ['books', location.search],
+//       queryFn: () =>
+//         fetchBooks({
+//           category_id: params.get(QUERY_STRING.CATEGORY_ID)
+//             ? Number(params.get(QUERY_STRING.CATEGORY_ID))
+//             : undefined,
+//           news: params.get(QUERY_STRING.NEWS)
+//             ? true
+//             : undefined,
+//           currentPage: params.get(QUERY_STRING.PAGE)
+//             ? Number(params.get(QUERY_STRING.PAGE))
+//             : 1,
+//           limit: LIMIT,
+//         }),
+//     })
+
+//   return {
+//     books: booksData?.books,
+//     pagination: booksData?.pagination,
+//     isEmpty: booksData?.books.length === 0,
+//     isLoading: isBooksLoading,
+//   }
+// }

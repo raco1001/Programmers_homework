@@ -22,5 +22,6 @@
       "@/*": ["src/*"]
     }
   },
+  "extends": "./tsconfig.paths.json",
   "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

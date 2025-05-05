@@ -21,3 +21,14 @@ export interface IBookDetail extends IBook {
   publication_date: string
   categoryPath: string[]
 }
+
+
+export interface IBookReviewItem {
+  reviewId: string
+  userName: string
+  rating: number
+  review: string
+  createdAt: string
+}
+
+export type BookReviewItemWrite = Pick<IBookReviewItem, 'review' | 'rating'>

@@ -1,8 +1,8 @@
 import { FaHeart } from 'react-icons/fa'
 import { styled } from 'styled-components'
-import { IBook } from '../../models/book.model'
-import { Theme } from '../../style/theme'
-import { formatNumber } from '../../utils/format'
+import { IBook } from '@/models/book.model'
+import { Theme } from '@/style/theme'
+import { formatNumber } from '@/utils/format'
 import { ViewMode } from './BooksViewSwitcher'
 import { Link } from 'react-router-dom'
 

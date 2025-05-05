@@ -1,5 +1,9 @@
 backend/youtube-demo/.env
 backend/bookshop/.env
+backend/bookshop/logs
+backend/bookshop/logs/*
+backend/bookshop/node_modules
+backend/bookshop/node_modules/*
 backend/node_modules
 backend/node_modules/*
 frontend/prg_c_basic/packages-microsoft-prod.deb

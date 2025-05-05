@@ -1,45 +1,31 @@
-import { IOrder, IOrderItem, IOrderSheet } from '../models/order.model'
-import { httpClient } from './http'
+import { IOrder, IOrderSheet } from '../models/order.model'
+import { requestHandler } from './http'
 
 export const createOrder = async (order: IOrderSheet) => {
-  try {
-    const response = await httpClient.post('/orders', order)
-    return response.data
-  } catch (error) {
-    throw error
-  }
+  return await requestHandler('POST', '/orders', order)
 }
 
 export const fetchOrders = async (): Promise<IOrder[]> => {
-  try {
-    const response = await httpClient.get<IOrder[]>('/orders')
+  const response = await requestHandler('GET', '/orders')
 
-    if (!response.data) {
-      console.error('No data received from orders API')
-      return []
-    }
-
-    const validOrders = response.data.filter((order) => {
-      if (!order.status) {
-        console.warn('Order missing status:', order)
-        return false
-      }
-      return true
-    })
-
-    return validOrders
-  } catch (error) {
-    console.error('Error fetching orders:', error)
+  if (!response.data) {
+    console.error('No data received from orders API')
     return []
   }
+
+  const validOrders = response.data.filter((order: IOrder) => {
+    if (!order.status) {
+      console.warn('Order missing status:', order)
+      return false
+    }
+    return true
+  })
+
+  return validOrders
 }
 
 export const fetchOrderItems = async (orderId: string) => {
-  try {
-    const response = await httpClient.get<IOrderItem[]>(`/orders/${orderId}`)
-    return response.data
-  } catch (error) {
-    console.error('Error fetching order items:', error)
-    return []
-  }
+  const response = await requestHandler('GET', `/orders/${orderId}`)
+  return response.data
 }
+

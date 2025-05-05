@@ -1,16 +1,16 @@
 import { useState } from 'react'
+import { FaAngleDown } from 'react-icons/fa'
 import styled from 'styled-components'
 import Button from './Button'
-import { FaAngleDown } from 'react-icons/fa'
 interface EllipsisBoxProps {
   children: React.ReactNode
-  lineLimit: number
+  linelimit: number
 }
 
-function EllipsisBox({ children, lineLimit }: EllipsisBoxProps) {
+function EllipsisBox({ children, linelimit }: EllipsisBoxProps) {
   const [expanded, setExpanded] = useState(false)
   return (
-    <EllipsisBoxStyle lineLimit={lineLimit} $expanded={expanded}>
+    <EllipsisBoxStyle linelimit={linelimit} $expanded={expanded}>
       <p>{children}</p>
       <div className="toggle">
         <Button
@@ -27,7 +27,7 @@ function EllipsisBox({ children, lineLimit }: EllipsisBoxProps) {
 }
 
 interface EllipsisBoxStyleProps {
-  lineLimit: number
+  linelimit: number
   $expanded: boolean
 }
 
@@ -36,8 +36,8 @@ const EllipsisBoxStyle = styled.div<EllipsisBoxStyleProps>`
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: ${({ lineLimit, $expanded }) =>
-      $expanded ? 'none' : lineLimit};
+    -webkit-line-clamp: ${({ linelimit, $expanded }) =>
+    $expanded ? 'none' : linelimit};
     -webkit-box-orient: vertical;
     padding: 20px 0 0 0;
     margin: 0;

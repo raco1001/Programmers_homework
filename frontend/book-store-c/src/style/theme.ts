@@ -46,7 +46,7 @@ export const light: Theme = {
   name: 'light',
   colors: {
     primary: '#3b72f2',
-    background: '#c1c0c0',
+    background: '#e9eaed',
     secondary: 'blue',
     tertiary: 'green',
     border: 'gray',

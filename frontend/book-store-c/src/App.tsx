@@ -1,109 +1,82 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Error from './components/common/Error'
+import ToastContainer from './components/common/toast/ToastContainer'
 import Layout from './components/layout/Layout'
 import { BookStoreThemeProvider } from './context/themeContext'
+import BookDetail from './pages/BookDetail'
 import Books from './pages/Books'
+import Cart from './pages/Cart'
 import Home from './pages/Home'
 import Login from './pages/Login'
-import ResetPassword from './pages/ResetPassword'
-import Signup from './pages/Signup'
-import BookDetail from './pages/BookDetail'
-import Cart from './pages/Cart'
 import Order from './pages/Order'
 import OrderList from './pages/OrderList'
-const router = createBrowserRouter([
+import ResetPassword from './pages/ResetPassword'
+import Signup from './pages/Signup'
+
+const queryClient = new QueryClient()
+
+const routeList = [
   {
     path: '/',
-    element: (
-      <Layout>
-        <Home />
-      </Layout>
-    ),
-    errorElement: <Error />,
+    element: <Home />,
   },
   {
     path: 'books',
-    element: (
-      <Layout>
-        <Books />
-      </Layout>
-    ),
-    errorElement: <Error />,
+    element: <Books />,
   },
   {
     path: 'signup',
-    element: (
-      <Layout>
-        <Signup />
-      </Layout>
-    ),
-    errorElement: <Error />,
+    element: <Signup />,
   },
   {
     path: 'reset',
-    element: (
-      <Layout>
-        <ResetPassword />
-      </Layout>
-    ),
-    errorElement: <Error />,
+    element: <ResetPassword />,
   },
   {
     path: 'login',
-    element: (
-      <Layout>
-        <Login />
-      </Layout>
-    ),
-    errorElement: <Error />,
+    element: <Login />,
   },
   {
     path: 'books',
-    element: (
-      <Layout>
-        <Books />
-      </Layout>
-    ),
-    errorElement: <Error />,
+    element: <Books />,
   },
   {
     path: 'books/:bookId',
-    element: (
-      <Layout>
-        <BookDetail />
-      </Layout>
-    ),
+    element: <BookDetail />,
   },
   {
     path: 'cart',
-    element: (
-      <Layout>
-        <Cart />
-      </Layout>
-    ),
+    element: <Cart />,
   },
   {
     path: 'order',
-    element: (
-      <Layout>
-        <Order />
-      </Layout>
-    ),
+    element: <Order />,
   },
   {
     path: 'orderList',
-    element: (
-      <Layout>
-        <OrderList />
-      </Layout>
-    ),
+    element: <OrderList />,
   },
-])
+]
+
+const newRouteList = routeList.map((item) => {
+  return {
+    ...item,
+    element: <Layout>{item.element}</Layout>,
+    errorElement: <Error />,
+  }
+})
+
+const router = createBrowserRouter(newRouteList)
+
 function App() {
   return (
-    <BookStoreThemeProvider>
-      <RouterProvider router={router} />
-    </BookStoreThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <BookStoreThemeProvider>
+        <RouterProvider router={router} />
+        <ToastContainer />
+      </BookStoreThemeProvider>
+    </QueryClientProvider>
   )
 }
 

@@ -14,7 +14,7 @@ const paymentRouter = require('./src/features/payments/payment-router')
 const addressRouter = require('./src/features/addresses/addresses-router')
 const categoryRouter = require('./src/features/categories/category-router')
 // const deliveryRouter = require('../features/deliveries/deliveryRouter');
-// const reviewRouter = require('../features/reviews/review-router');
+// const reviewRouter = require('./src/features/reviews/review-router')
 
 /**
  * @swagger
@@ -547,7 +547,7 @@ app.use('/orders', orderRouter)
 app.use('/payments', paymentRouter)
 app.use('/categories', categoryRouter)
 // app.use('/deliveries', deliveryRouter);
-// app.use('/reviews', reviewRouter);
+// app.use('/reviews', reviewRouter)
 
 app.use('/faker', fakerRouter)
 

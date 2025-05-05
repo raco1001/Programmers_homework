@@ -1,14 +1,17 @@
+import AddToCart from '@/components/bookDetail/AddToCart'
+import BookReviews from '@/components/bookDetail/BookReviews'
+import LikeButton from '@/components/bookDetail/LikeButton'
+import EllipsisBox from '@/components/common/EllipsisBox'
+import Modal from '@/components/common/Modal'
+import { Tab, Tabs } from '@/components/common/Tabs'
+import Title from '@/components/common/Title'
+import useBookDetail from '@/hooks/useBookDetails'
+import { IBookDetail } from '@/models/book.model'
+import { Theme } from '@/style/theme'
+import { formatDate, formatNumber } from '@/utils/format'
+import { useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import { styled } from 'styled-components'
-import { useParams } from 'react-router-dom'
-import useBookDetail from '../hooks/useBookDetails'
-import Title from '../components/common/Title'
-import { IBookDetail } from '../models/book.model'
-import { formatNumber, formatDate } from '../utils/format'
-import { Link } from 'react-router-dom'
-import { Theme } from '../style/theme'
-import EllipsisBox from '../components/common/EllipsisBox'
-import LikeButton from '../components/bookDetail/LikeButton'
-import AddToCart from '../components/bookDetail/AddToCart'
 const bookInfoList = [
   {
     label: '카테고리',
@@ -49,15 +52,19 @@ const bookInfoList = [
 
 function BookDetail() {
   const { bookId } = useParams()
-  const { bookDetail, likeToggle } = useBookDetail(bookId)
+  const { bookDetail, likeToggle, reviews, addBookReview } = useBookDetail(bookId)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   if (!bookDetail) return null
 
   return (
     <BookDetailStyle>
       <header className="header">
-        <div className="img">
+        <div className="img" onClick={() => setIsModalOpen(true)}>
           <img src={bookDetail.img_path} alt={bookDetail.title} />
         </div>
+        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+          <img src={bookDetail.img_path} alt={bookDetail.title} />
+        </Modal>
         <div className="info">
           <Title size="large" color="text">
             {bookDetail.title}
@@ -82,10 +89,19 @@ function BookDetail() {
         </div>
       </header>
       <div className="content">
-        <Title size="medium">상세 설명</Title>
-        <EllipsisBox lineLimit={2}>{bookDetail.description}</EllipsisBox>
-        <Title size="medium">목차</Title>
-        <EllipsisBox lineLimit={2}>{bookDetail.table_of_contents}</EllipsisBox>
+        <Tabs>
+          <Tab title="상세 설명">
+            <Title size="medium">상세 설명</Title>
+            <EllipsisBox linelimit={2}>{bookDetail.description}</EllipsisBox>
+          </Tab>
+          <Tab title="목차">
+            <Title size="medium">목차</Title>
+            <EllipsisBox linelimit={2}>{bookDetail.table_of_contents}</EllipsisBox>
+          </Tab>
+          <Tab title="리뷰">
+            <BookReviews reviews={reviews} onAddReview={addBookReview} />
+          </Tab>
+        </Tabs>
       </div>
     </BookDetailStyle>
   )

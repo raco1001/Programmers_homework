@@ -4,6 +4,7 @@ import {
   FaShoppingCart,
   FaSignInAlt,
   FaSignOutAlt,
+  FaUserCircle,
 } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import { styled } from 'styled-components'
@@ -12,6 +13,7 @@ import { useCategory } from '../../hooks/useCategory'
 import { useAuthStore } from '../../store/authStore'
 import { Theme } from '../../style/theme'
 import ThemeSwitcher from '../header/ThemeSwitcher'
+import DropDown from './DropDown'
 function Header() {
   const { category } = useCategory()
   const { isLoggedIn, storeLogout } = useAuthStore()
@@ -36,48 +38,48 @@ function Header() {
         </nav>
 
         <div className="right-section">
-          <ThemeSwitcher />
           <nav className="auth">
-            {isLoggedIn && (
-              <ul>
-                <li>
-                  <Link to="/cart">
-                    <FaShoppingCart />
-                    장바구니
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/orderlist">
-                    <FaShoppingBag />
-                    주문내역
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/login">
-                    <button onClick={storeLogout}>
+            <DropDown toggleButton={<FaUserCircle />}>
+              {isLoggedIn && (
+                <ul>
+                  <li>
+                    <Link to="/cart">
+                      <FaShoppingCart />
+                      장바구니
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/orderlist">
+                      <FaShoppingBag />
+                      주문내역
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/login" onClick={storeLogout}>
                       <FaSignOutAlt />
                       로그아웃
-                    </button>
-                  </Link>
-                </li>
-              </ul>
-            )}
-            {!isLoggedIn && (
-              <ul>
-                <li>
-                  <Link to="/login">
-                    <FaSignInAlt />
-                    로그인
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/signup">
-                    <FaRegUser />
-                    회원가입
-                  </Link>
-                </li>
-              </ul>
-            )}
+                    </Link>
+                  </li>
+                </ul>
+              )}
+              {!isLoggedIn && (
+                <ul>
+                  <li>
+                    <Link to="/login">
+                      <FaSignInAlt />
+                      로그인
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/signup">
+                      <FaRegUser />
+                      회원가입
+                    </Link>
+                  </li>
+                </ul>
+              )}
+              <ThemeSwitcher />
+            </DropDown>
           </nav>
         </div>
       </div>
@@ -138,25 +140,33 @@ const HeaderStyle = styled.header<{ theme: Theme }>`
   .auth {
     ul {
       display: flex;
+      flex-direction: column;
       gap: 16px;
+      width: 120px;
+      li {
+        a,
+        button {
+          font-size: 1 rem;
+          font-weight: 600;
+          text-decoration: none;
+          display: flex;
+          align-items: center;
+          line-height: 1;
+          background-color: none;
+          border: 0;
+          cursor: pointer;
+          gap: 6px;
+          color: ${({ theme }) => theme.colors.text};
+          justify-content: center;
+          width: 100%;
 
-      li,
-      a,
-      button {
-        font-size: 0.9rem;
-        font-weight: 500;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        line-height: 1;
-        background-color: none;
-        border: none;
-        cursor: pointer;
-        gap: 6px;
-        color: ${({ theme }) => theme.colors.text};
+          svg {
+            margin-right: 6px;
+          }
 
-        &:hover {
-          color: ${({ theme }) => theme.colors.primary};
+          &:hover {
+            color: ${({ theme }) => theme.colors.primary};
+          }
         }
       }
     }

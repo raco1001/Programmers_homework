@@ -1,11 +1,11 @@
 import styled from 'styled-components'
-import { IBookDetail } from '../../models/book.model'
-import Button from '../common/Button'
-import InputText from '../common/InputText'
+import { IBookDetail } from '@/models/book.model'
+import Button from '@/components/common/Button'
+import InputText from '@/components/common/InputText'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Theme } from '../../style/theme'
-import { useBookDetail } from '../../hooks/useBookDetails'
+import { Theme } from '@/style/theme'
+import { useBookDetail } from '@/hooks/useBookDetails'
 interface AddToCartProps {
   bookDetail: IBookDetail
 }
