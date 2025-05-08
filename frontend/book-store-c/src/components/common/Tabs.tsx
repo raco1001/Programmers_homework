@@ -1,3 +1,4 @@
+import { useEventLogger } from '@/hooks/useEventLogger'
 import React, { useState } from 'react'
 import { styled } from 'styled-components'
 import { Theme } from '../../style/theme'
@@ -18,10 +19,14 @@ interface ITabsProps {
 
 function Tabs({ children }: ITabsProps) {
   const [activeTabIndex, setActiveTabIndex] = useState(0)
-
+  const logEvent = useEventLogger()
+  const handleTabClick = (index: number) => {
+    setActiveTabIndex(index)
+    logEvent('tab_click', { tabIndex: index })
+  }
   const tabs = React.Children.map(children, (child, index) => {
     return React.cloneElement(child as React.ReactElement, {
-      onClick: () => setActiveTabIndex(index),
+      onClick: () => handleTabClick(index),
     })
   })
 
@@ -30,7 +35,7 @@ function Tabs({ children }: ITabsProps) {
       <TabsStyle>
         <div className="tab-header">
           {tabs?.map((tab, index) => (
-            <button key={index} onClick={() => setActiveTabIndex(index)} className={`tab-header-item ${index === activeTabIndex ? 'active' : ''}`}>
+            <button key={index} onClick={() => handleTabClick(index)} className={`tab-header-item ${index === activeTabIndex ? 'active' : ''}`}>
               {tab.props.title}
             </button>
           ))}

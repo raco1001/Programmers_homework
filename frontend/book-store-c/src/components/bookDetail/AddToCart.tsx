@@ -1,16 +1,17 @@
-import styled from 'styled-components'
-import { IBookDetail } from '@/models/book.model'
 import Button from '@/components/common/Button'
 import InputText from '@/components/common/InputText'
+import { useBookDetail } from '@/hooks/useBookDetails'
+import { IBookDetail } from '@/models/book.model'
+import { Theme } from '@/style/theme'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Theme } from '@/style/theme'
-import { useBookDetail } from '@/hooks/useBookDetails'
+import styled from 'styled-components'
 interface AddToCartProps {
   bookDetail: IBookDetail
 }
 
 function AddToCart({ bookDetail }: AddToCartProps) {
+
   const [quantity, setQuantity] = useState<number>(1)
   const { handleAddToCart, cartAdded } = useBookDetail(bookDetail.id)
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +47,9 @@ function AddToCart({ bookDetail }: AddToCartProps) {
       <Button
         size="medium"
         schema="primary"
-        onClick={() => handleAddToCart(quantity)}
+        onClick={() => {
+          handleAddToCart(quantity)
+        }}
       >
         장바구니 담기
       </Button>

@@ -1,18 +1,24 @@
+import { useEventLogger } from '@/hooks/useEventLogger'
+import { FaHeart } from 'react-icons/fa'
 import styled from 'styled-components'
 import { IBookDetail } from '../../models/book.model'
 import Button from '../common/Button'
-import { FaHeart } from 'react-icons/fa'
+
 interface LikeButtonProps {
   bookDetail: IBookDetail
   onClick: () => void
 }
 
 function LikeButton({ bookDetail, onClick }: LikeButtonProps) {
+  const logEvent = useEventLogger()
   return (
     <LikeButtonStyle
       size="medium"
       schema={bookDetail.isLiked ? 'like' : 'normal'}
-      onClick={onClick}
+      onClick={() => {
+        logEvent('like_click', { bookId: bookDetail.id })
+        onClick()
+      }}
     >
       <FaHeart />
       {bookDetail.likes}

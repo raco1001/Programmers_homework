@@ -36,8 +36,10 @@ const mockReviewData = (): IBookReviewItem[] => {
   })).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 }
 
+const API_URL = process.env.REACT_APP_API_BASE_URL
+
 export const reviewsByBookId =
-  http.get('http://localhost:3007/reviews/:bookId', ({ request }) => {
+  http.get(`${API_URL}/reviews/:bookId`, ({ request }) => {
     const bookId = request.url.split('/').pop()
     if (!bookId) {
       return HttpResponse.json({ error: 'Book ID is required' }, { status: 400 })
@@ -50,7 +52,7 @@ export const reviewsByBookId =
     }
   })
 
-export const addReview = http.post('http://localhost:3007/reviews/:bookId', async ({ request, params }) => {
+export const addReview = http.post(`${API_URL}/reviews/:bookId`, async ({ request, params }) => {
   try {
     const newReview = await request.json() as BookReviewItemWrite
     const review: IBookReviewItem = {
@@ -64,4 +66,8 @@ export const addReview = http.post('http://localhost:3007/reviews/:bookId', asyn
   } catch (error) {
     return HttpResponse.json({ error: 'Failed to add review' }, { status: 500 })
   }
+})
+
+export const reviewForMain = http.get(`${API_URL}/reviews/`, () => {
+  return HttpResponse.json(mockReviewData(), { status: 200 })
 })

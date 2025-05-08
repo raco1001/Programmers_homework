@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Error from './components/common/Error'
+import Error from './components/common/errors/Error'
+import { ErrorBoundary } from './components/common/errors/ErrorBoundary'
 import ToastContainer from './components/common/toast/ToastContainer'
 import Layout from './components/layout/Layout'
 import { BookStoreThemeProvider } from './context/themeContext'
@@ -13,7 +14,6 @@ import Order from './pages/Order'
 import OrderList from './pages/OrderList'
 import ResetPassword from './pages/ResetPassword'
 import Signup from './pages/Signup'
-
 const queryClient = new QueryClient()
 
 const routeList = [
@@ -71,12 +71,14 @@ const router = createBrowserRouter(newRouteList)
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BookStoreThemeProvider>
-        <RouterProvider router={router} />
-        <ToastContainer />
-      </BookStoreThemeProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <BookStoreThemeProvider>
+          <RouterProvider router={router} />
+          <ToastContainer />
+        </BookStoreThemeProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   )
 }
 

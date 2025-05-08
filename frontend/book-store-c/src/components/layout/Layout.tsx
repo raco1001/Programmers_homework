@@ -1,13 +1,14 @@
+import { useEventLogger } from '@/hooks/useEventLogger'
 import { styled } from 'styled-components'
 import { Theme } from '../../style/theme'
 import Footer from '../common/Footer'
 import Header from '../common/Header'
-
 interface LayoutProps {
   children: React.ReactNode
 }
 
 function Layout({ children }: LayoutProps) {
+  useEventLogger()
   return (
     <>
       <Header />

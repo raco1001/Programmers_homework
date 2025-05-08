@@ -1,12 +1,15 @@
+import { useEventLogger } from '@/hooks/useEventLogger'
+import { useSearchParams } from 'react-router-dom'
 import { styled } from 'styled-components'
+import { QUERY_STRING } from '../../constants/querystring'
 import { useCategory } from '../../hooks/useCategory'
 import Button from '../common/Button'
-import { useSearchParams } from 'react-router-dom'
-import { QUERY_STRING } from '../../constants/querystring'
+
+
 function BooksFilter() {
   const { category } = useCategory()
   const [searchParams, setSearchParams] = useSearchParams()
-
+  const logEvent = useEventLogger()
   const handleCategory = (id: number | null) => {
     const newSearchParams = new URLSearchParams(searchParams)
     if (id === null) {
@@ -15,6 +18,13 @@ function BooksFilter() {
       newSearchParams.set(QUERY_STRING.CATEGORY_ID, id.toString())
     }
     setSearchParams(newSearchParams)
+    logEvent('category_click', { categoryId: id })
+    console.log('Event logged:', {
+      eventName: 'category_click',
+      payload: { categoryId: id },
+      endpoint: process.env.REACT_APP_MONITORING_ENDPOINT,
+      isEnabled: process.env.REACT_APP_ENABLE_MONITORING === 'true'
+    })
   }
 
   const handleNews = () => {
@@ -25,6 +35,13 @@ function BooksFilter() {
       newsSearchParams.set(QUERY_STRING.NEWS, 'true')
     }
     setSearchParams(newsSearchParams)
+    logEvent('news_click', { isNews: newsSearchParams.get(QUERY_STRING.NEWS) === 'true' })
+    console.log('Event logged:', {
+      eventName: 'news_click',
+      payload: { isNews: newsSearchParams.get(QUERY_STRING.NEWS) === 'true' },
+      endpoint: process.env.REACT_APP_MONITORING_ENDPOINT,
+      isEnabled: process.env.REACT_APP_ENABLE_MONITORING === 'true'
+    })
   }
 
   return (

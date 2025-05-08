@@ -37,7 +37,7 @@ const validateAccessToken = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
     req.userId = decoded.id
-    console.log('validateAccessToken: ', req.userId)
+    console.log('validateAccessToken#######: ', req.userId)
     next()
   } catch (error) {
     if (error.name === 'TokenExpiredError') {

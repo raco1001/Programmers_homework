@@ -21,11 +21,12 @@ function Toast({ id, message, type }: ToastItem) {
   };
 
   const handleAnimationEnd = () => {
+    console.log('handleAnimationEnd', isFadingOut)
     if (isFadingOut) {
       removeToast(id);
     }
   };
-
+  // fade-out <-> remove 별개의사건 입니다.
   return (
     <ToastStyle type={type} className={isFadingOut ? 'fade-out' : 'fade-in'} onAnimationEnd={handleAnimationEnd}>
       <p>

@@ -6,6 +6,7 @@ import Modal from '@/components/common/Modal'
 import { Tab, Tabs } from '@/components/common/Tabs'
 import Title from '@/components/common/Title'
 import useBookDetail from '@/hooks/useBookDetails'
+import { useEventLogger } from '@/hooks/useEventLogger'
 import { IBookDetail } from '@/models/book.model'
 import { Theme } from '@/style/theme'
 import { formatDate, formatNumber } from '@/utils/format'
@@ -54,6 +55,8 @@ function BookDetail() {
   const { bookId } = useParams()
   const { bookDetail, likeToggle, reviews, addBookReview } = useBookDetail(bookId)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const logEvent = useEventLogger()
+  logEvent('book_detail_view', { bookId: bookId })
   if (!bookDetail) return null
 
   return (

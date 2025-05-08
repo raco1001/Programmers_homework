@@ -7,7 +7,7 @@ const {
 } = require('./user-repository')
 const { hashPassword } = require('../auth/auth-utils')
 const { generateUUID } = require('../../shared/utils/generateUUID')
-const { uuidToBinary } = require('../../shared/utils/convertIds')
+const { uuidToBinary, binaryToUUID } = require('../../shared/utils/convertIds')
 
 const registerUser = async (email, password) => {
   console.log(`[registerUser] 회원가입 요청 받음: ${email}, ${password}`)
@@ -18,7 +18,10 @@ const registerUser = async (email, password) => {
   console.log(`[registerUser] 이메일 중복 확인 완료: ${email}`)
   const { salt, hashedPassword } = hashPassword(password)
   const uid = generateUUID()
+  console.log('uid+++++++++++++++++: ', uid)
+
   const bid = uuidToBinary(uid)
+  console.log('binaryToUUID+++++++++++++++++: ', binaryToUUID(bid))
   console.log(
     `[registerUser] 유저 생성 중: ${bid}, ${email}, ${hashedPassword}, ${salt}`,
   )

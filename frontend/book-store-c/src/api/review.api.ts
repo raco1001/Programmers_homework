@@ -21,3 +21,13 @@ export const addReview = async (bookId: string, data: BookReviewItemWrite): Prom
     throw error
   }
 }
+
+export const fetchMainReviews = async (): Promise<IBookReviewItem[]> => {
+  try {
+    const response = await requestHandler<IBookReviewItem[]>('GET', '/reviews/')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching main reviews:', error)
+    return []
+  }
+}

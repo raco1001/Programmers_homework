@@ -2,8 +2,27 @@ const cookieParser = require('cookie-parser')
 const express = require('express')
 const cors = require('cors')
 const errorHandler = require('./src/shared/middlewares/errorHandler')
+const { checkAccessToken } = require('./src/features/logging/log-middleware')
 const app = express()
+
+// 기본 미들웨어 설정
 app.use(cookieParser())
+app.use(express.json())
+
+// CORS 설정
+app.use(
+  cors({
+    origin: true, // 프론트엔드 URL
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+  }),
+)
+
+// 로깅 미들웨어 추가
+app.use(checkAccessToken)
+
+// 라우터 설정
 const authRouter = require('./src/features/auth/auth-router')
 const userRouter = require('./src/features/users/user-router')
 const bookRouter = require('./src/features/books/book-router')
@@ -13,6 +32,10 @@ const likeRouter = require('./src/features/likes/like-router')
 const paymentRouter = require('./src/features/payments/payment-router')
 const addressRouter = require('./src/features/addresses/addresses-router')
 const categoryRouter = require('./src/features/categories/category-router')
+const clientEventRouter = require('./src/features/logging/client-event-router')
+const clientErrorRouter = require('./src/features/logging/client-error-router')
+const fakerRouter = require('./tools/faker/faker')
+
 // const deliveryRouter = require('../features/deliveries/deliveryRouter');
 // const reviewRouter = require('./src/features/reviews/review-router')
 
@@ -526,18 +549,7 @@ const categoryRouter = require('./src/features/categories/category-router')
  *         description: 결제 제공자 추가 성공
  */
 
-const fakerRouter = require('./tools/faker/faker')
-
-app.use(express.json())
-
-// Add CORS middleware
-app.use(
-  cors({
-    origin: 'http://localhost:3000', // Replace with your frontend URL
-    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
-  }),
-)
-
+// 라우터 등록
 app.use('/auth', authRouter)
 app.use('/users', userRouter)
 app.use('/books', bookRouter)
@@ -546,6 +558,8 @@ app.use('/carts', cartRouter)
 app.use('/orders', orderRouter)
 app.use('/payments', paymentRouter)
 app.use('/categories', categoryRouter)
+app.use('/client-events', clientEventRouter)
+app.use('/client-errors', clientErrorRouter)
 // app.use('/deliveries', deliveryRouter);
 // app.use('/reviews', reviewRouter)
 

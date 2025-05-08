@@ -18,8 +18,8 @@ const getCartItems = async (req, res, next) => {
 const addToCart = async (req, res, next) => {
   try {
     const userId = req.userId
-    const { bookId, quantity } = req.body
-    await addCartItem(userId, bookId, quantity)
+    const { productId, quantity } = req.body
+    await addCartItem(userId, productId, quantity)
     res
       .status(201)
       .json({ status: 'success', message: '장바구니에 상품 추가 완료' })

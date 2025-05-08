@@ -1,7 +1,8 @@
-import { httpClient } from './http'
 import { ICart } from '../models/cart.model'
+import { httpClient } from './http'
+
 interface AddCartRequest {
-  bookId: string
+  productId: string
   quantity: number
 }
 

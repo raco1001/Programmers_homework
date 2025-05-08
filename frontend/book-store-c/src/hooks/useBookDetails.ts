@@ -53,7 +53,7 @@ export const useBookDetail = (bookId: string | undefined) => {
 
   const handleAddToCart = (quantity: number) => {
     if (!bookDetail) return
-    addCart({ bookId: bookDetail.id, quantity: quantity }).then(() => {
+    addCart({ productId: bookDetail.id, quantity: quantity }).then(() => {
       setCartAdded(true)
       setTimeout(() => {
         setCartAdded(false)

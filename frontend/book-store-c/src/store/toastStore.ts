@@ -20,7 +20,7 @@ interface ToastStoreState {
 }
 
 const useToastStore = create<ToastStoreState>((set) => ({
-  toasts: [],
+  toasts: [], // 여기서 애니메이션이 초기화 되는듯??
   addToast: (message, type = "info", config = { replacePrevious: false }) => {
     const id = Date.now().toString();
 

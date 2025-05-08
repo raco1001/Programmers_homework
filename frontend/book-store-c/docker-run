@@ -1,0 +1,8 @@
+docker run -p 3224:3000 -p 3225:3001 --name bookshop-frontend\
+  --mount type=bind,source="$(pwd)/src",target=/app/src \
+  --mount type=bind,source="$(pwd)/src/api",target=/build \
+  --mount type=bind,source="$(pwd)/public",target=/app/public \
+  --mount type=bind,source="$(pwd)/package.json",target=/app/package.json \
+  --mount type=bind,source="$(pwd)/tsconfig.json",target=/app/tsconfig.json \
+  --mount type=bind,source="$(pwd)/craco.config.js",target=/app/craco.config.js \
+  --mount type=bind,source="$(pwd)/tsconfig.paths.json",target=/app/tsconfig.paths.json  node:latest
