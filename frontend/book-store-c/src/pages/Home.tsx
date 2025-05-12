@@ -1,17 +1,29 @@
-import MainReview from '@/components/home/MainReview'
+import Title from '@/components/common/Title'
+import MainBest from '@/components/main/MainBest'
+import MainNewBooks from '@/components/main/MainNewBooks'
+import MainReview from '@/components/main/MainReview'
 import styled from 'styled-components'
-import Title from '../components/common/Title'
 import { useMain } from '../hooks/useMain'
 function Home() {
-  const { reviews, isLoading, error } = useMain()
+  const { reviews, newBooks, bestBooks } = useMain()
   return (
     <HomeStyle>
-      <Title size="large">제목 테스트</Title>
       {/* 배너 */}
       {/* 베스트 셀러 */}
+      <section className='section'>
+        <Title size='large'>베스트 셀러</Title>
+        <MainBest books={bestBooks} />
+      </section>
       {/* 신간 */}
+      <section className='section'>
+        <Title size='large'>신간 안내</Title>
+        <MainNewBooks books={newBooks} />
+      </section>
       {/* 리뷰 */}
-      <MainReview reviews={reviews} />
+      <section className='section'>
+        <Title size='large'>리뷰</Title>
+        <MainReview reviews={reviews} />
+      </section>
     </HomeStyle>
   )
 }
@@ -19,9 +31,8 @@ function Home() {
 const HomeStyle = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
+  gap: 24px;
+  padding: 24px;
 `
 
 export default Home

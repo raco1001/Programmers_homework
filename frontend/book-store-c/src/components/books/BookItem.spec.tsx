@@ -6,7 +6,7 @@ import BookItem from './BookItem'
 
 const dummyBook: IBook = {
   id: 'ebb7db87-0dee-11f0-910e-c277ba14597b',
-  category_id: '1',
+  category_id: 1,
   title: '책 제목',
   author: '저자',
   summary: '책 요약',

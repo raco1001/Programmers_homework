@@ -1,6 +1,6 @@
 import { BookReviewItemWrite, IBookReviewItem } from '@/models/book.model'
 import { fakerKO as faker } from '@faker-js/faker'
-import { HttpResponse, http } from 'msw'
+import { http, HttpResponse } from 'msw'
 
 // const mockReviewsData: IBookReviewItem[] = [
 //   {
@@ -57,7 +57,7 @@ export const addReview = http.post(`${API_URL}/reviews/:bookId`, async ({ reques
     const newReview = await request.json() as BookReviewItemWrite
     const review: IBookReviewItem = {
       reviewId: faker.string.uuid(),
-      userName: '테스트 사용자', // 임시로 고정된 사용자 이름
+      userName: '테스트 사용자',
       rating: newReview.rating,
       review: newReview.review,
       createdAt: new Date().toISOString(),
@@ -68,6 +68,6 @@ export const addReview = http.post(`${API_URL}/reviews/:bookId`, async ({ reques
   }
 })
 
-export const reviewForMain = http.get(`${API_URL}/reviews/`, () => {
+export const reviewForMain = http.get(`${API_URL}/reviews`, () => {
   return HttpResponse.json(mockReviewData(), { status: 200 })
 })

@@ -1,6 +1,6 @@
-import { httpClient } from './http'
 import { IBook, IBookDetail } from '../models/book.model'
 import { IPagination } from '../models/pagination.model'
+import { httpClient } from './http'
 interface FetchBooksParams {
   category_id?: number
   news?: boolean
@@ -67,6 +67,15 @@ export const unlikeBook = async (bookId: string) => {
     return response.data
   } catch (error) {
     console.error('Error in unlikeBook:', error)
+    throw error
+  }
+}
+
+export const fetchBestBooks = async () => {
+  try {
+    const response = await httpClient.get<FetchBooksResponse>('/books/best')
+    return response.data
+  } catch (error) {
     throw error
   }
 }

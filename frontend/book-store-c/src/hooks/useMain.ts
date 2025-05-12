@@ -1,26 +1,25 @@
+import { fetchBestBooks, fetchBooks } from "@/api/books.api"
 import { fetchMainReviews } from "@/api/review.api"
-import { IBookReviewItem } from "@/models/book.model"
+import { IBook, IBookReviewItem } from "@/models/book.model"
 import { useEffect, useState } from "react"
+
 export const useMain = () => {
   const [reviews, setReviews] = useState<IBookReviewItem[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<Error | null>(null)
+  const [newBooks, setNewBooks] = useState<IBook[]>([])
+  const [bestBooks, setBestBooks] = useState<IBook[]>([])
 
   useEffect(() => {
-    const fetchReviews = async () => {
-      setIsLoading(true)
-      try {
-        const response = await fetchMainReviews()
-        setReviews(response)
-        console.log(response)
-      } catch (error) {
-        setError(error as Error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    fetchReviews()
+    fetchMainReviews().then((reviews) => {
+      setReviews(reviews)
+    })
+    fetchBestBooks().then(({ books }) => {
+      console.log(books)
+      setBestBooks(books)
+    })
+    fetchBooks({ category_id: undefined, news: true, currentPage: 1, limit: 10 }).then(({ books }) => {
+      setNewBooks(books)
+    })
   }, [])
 
-  return { reviews, isLoading, error }
+  return { reviews, bestBooks, newBooks }
 }

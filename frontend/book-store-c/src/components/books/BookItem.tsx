@@ -1,10 +1,10 @@
-import { FaHeart } from 'react-icons/fa'
-import { styled } from 'styled-components'
 import { IBook } from '@/models/book.model'
 import { Theme } from '@/style/theme'
 import { formatNumber } from '@/utils/format'
-import { ViewMode } from './BooksViewSwitcher'
+import { FaHeart } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
+import { styled } from 'styled-components'
+import { ViewMode } from './BooksViewSwitcher'
 
 interface IBookItemsProps {
   book: IBook
@@ -26,10 +26,10 @@ function BookItem({ book, view }: IBookItemsProps) {
           <img src={book.img_path} alt={book.title} />
         </div>
         <div className="content">
-          <h2>{book.title}</h2>
-          <p>{book.summary}</p>
-          <p>{book.author}</p>
-          <p>{formatNumber(book.price)}원</p>
+          <h2 className='title'>{book.title}</h2>
+          <p className='summary'>{book.summary}</p>
+          <p className='author'>{book.author}</p>
+          <p className='price'>{formatNumber(book.price)}원</p>
           <div className="likes">
             <FaHeart />
             <p>{book.likes}</p>
@@ -40,7 +40,7 @@ function BookItem({ book, view }: IBookItemsProps) {
   )
 }
 
-const BookItemStyle = styled.div<
+export const BookItemStyle = styled.div<
   Pick<IBookItemsProps, 'view'> & { theme: Theme }
 >`
   a {
@@ -69,7 +69,7 @@ const BookItemStyle = styled.div<
 
     .summary {
       font-size: 0.875rem;
-      color: ${({ theme }) => theme.colors.secondary};
+      color: ${({ theme }) => theme.colors.text};
     }
 
     .author {

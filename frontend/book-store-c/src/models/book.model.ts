@@ -1,6 +1,6 @@
 export interface IBook {
   id: string
-  category_id: string
+  category_id: number
   title: string
   author: string
   summary: string

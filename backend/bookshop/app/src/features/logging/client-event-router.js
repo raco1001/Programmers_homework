@@ -16,7 +16,7 @@ router.post('/', checkAccessToken, (req, res) => {
     userEmail: req.userEmail,
   })
 
-  logEvent(JSON.stringify(log))
+  logEvent(JSON.stringify(logEvent))
   res.sendStatus(200)
 })
 
