@@ -47,6 +47,5 @@ frontend/ledger_class/prms-js/node_modules
 frontend/ledger_class/prg_vanilla/node_modules
 frontend/ReactExamples/my-app/node_modules
 frontend/ReactExamples/todolist/node_modules
-
-.vscode
 teamProject
+.vscode

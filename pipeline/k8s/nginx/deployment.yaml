@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dpy-nginx
+  labels:
+    app: dpy-nginx
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: dpy-nginx
+  template:
+    metadata:
+      labels:
+        app: dpy-nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: '64Mi'
+              cpu: '250m'
+            limits:
+              memory: '128Mi'
+              cpu: '500m'
