@@ -47,5 +47,48 @@ frontend/ledger_class/prms-js/node_modules
 frontend/ledger_class/prg_vanilla/node_modules
 frontend/ReactExamples/my-app/node_modules
 frontend/ReactExamples/todolist/node_modules
+pipeline/jenkins/java_calculator/
+
+
+pipeline/jenkins/java_calculator/HELP.md
+pipeline/jenkins/java_calculator/.gradle
+pipeline/jenkins/java_calculator/build/
+pipeline/jenkins/java_calculator/!gradle/wrapper/gradle-wrapper.jar
+pipeline/jenkins/java_calculator/!**/src/main/**/build/
+pipeline/jenkins/java_calculator/!**/src/test/**/build/
+
+### STS ###
+pipeline/jenkins/java_calculator/.apt_generated
+pipeline/jenkins/java_calculator/.classpath
+pipeline/jenkins/java_calculator/.factorypath
+pipeline/jenkins/java_calculator/.project
+pipeline/jenkins/java_calculator/.settings
+pipeline/jenkins/java_calculator/.springBeans
+pipeline/jenkins/java_calculator/.sts4-cache
+pipeline/jenkins/java_calculator/bin/
+pipeline/jenkins/java_calculator/!**/src/main/**/bin/
+pipeline/jenkins/java_calculator/!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+pipeline/jenkins/java_calculator/.idea
+pipeline/jenkins/java_calculator/*.iws
+pipeline/jenkins/java_calculator/*.iml
+pipeline/jenkins/java_calculator/*.ipr
+pipeline/jenkins/java_calculator/out/
+pipeline/jenkins/java_calculator/!**/src/main/**/out/
+pipeline/jenkins/java_calculator/!**/src/test/**/out/
+
+### NetBeans ###
+pipeline/jenkins/java_calculator/nbproject/private/
+pipeline/jenkins/java_calculator/nbbuild/
+pipeline/jenkins/java_calculator/dist/
+pipeline/jenkins/java_calculator/nbdist/
+pipeline/jenkins/java_calculator/.nb-gradle/
+
+### VS Code ###
+pipeline/jenkins/java_calculator/.vscode/
+pipeline/jenkins/java_calculator/registry/
+
+
 teamProject
 .vscode

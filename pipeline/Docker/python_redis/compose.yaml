@@ -1,0 +1,32 @@
+include:
+  - monitor.yaml
+
+services:
+  web:
+    build: .
+    ports:
+      - '8000:5000'
+    environment:
+      - HOST=redis
+      - PORT=6379
+    networks:
+      - svc
+      - dbg
+    volumes:
+      - msg:/msg
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /code
+  redis:
+    image: 'redis:alpine'
+    networks:
+      - svc
+
+networks:
+  svc: {}
+  dbg: {}
+
+volumes:
+  msg:

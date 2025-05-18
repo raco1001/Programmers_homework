@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jenkins-pv
+spec:
+  capacity:
+    storage: 8Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/docker-desktop-disk/data/k8s-pvs/jenkins
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual-hostpath
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    meta.helm.sh/release-name: jenkins
+    meta.helm.sh/release-namespace: default
+    pv.kubernetes.io/bind-completed: 'yes'
+    pv.kubernetes.io/bound-by-controller: 'yes'
+    volume.beta.kubernetes.io/storage-provisioner: docker.io/hostpath
+    volume.kubernetes.io/storage-provisioner: docker.io/hostpath
+  creationTimestamp: '2025-05-14T06:53:54Z'
+  finalizers:
+    - kubernetes.io/pvc-protection
+  labels:
+    app.kubernetes.io/component: jenkins-controller
+    app.kubernetes.io/instance: jenkins
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: jenkins
+    helm.sh/chart: jenkins-5.8.43
+  name: jenkins
+  namespace: default
+  resourceVersion: '76848'
+  uid: 65f279e3-e854-4063-a8e2-f383417806b2
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi
+  storageClassName: manual-hostpath
+  volumeMode: Filesystem
+  volumeName: jenkins-pv
+status:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 8Gi
+  phase: Bound

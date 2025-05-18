@@ -1,0 +1,8 @@
+services:
+  monitor:
+    image: ubuntu:22.04
+    tty: True
+    networks:
+      - dbg
+    volumes:
+      - msg:/msg
