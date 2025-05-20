@@ -90,5 +90,17 @@ pipeline/jenkins/java_calculator/.vscode/
 pipeline/jenkins/java_calculator/registry/
 
 
+pipeline/Terraform/K8S_Terraform/.terraform
+pipeline/Terraform/K8S_Terraform/terraform.lock.hcl
+pipeline/Terraform/K8S_Terraform/terraform.tfvars
+pipeline/Terraform/SimpleCD/iac/.terraform
+pipeline/Terraform/SimpleCD/iac/terraform.lock.hcl
+pipeline/Terraform/TerraformCloud/.terraform
+pipeline/Terraform/TerraformCloud/terraform.lock.hcl
+pipeline/Terraform/TerraformInit/.terraform
+pipeline/Terraform/TerraformInit/terraform.lock.hcl
+pipeline/Terraform/TerraformInit/terraform.tfstate
+pipeline/Terraform/TerraformInit/terraform.tfstate.backup
+
 teamProject
 .vscode
