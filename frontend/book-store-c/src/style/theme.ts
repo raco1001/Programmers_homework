@@ -12,6 +12,7 @@ export type ButtonSize = 'large' | 'medium' | 'small'
 export type ButtonSchema = 'primary' | 'normal' | 'like'
 export type BorderRadius = 'default'
 export type LayoutWidth = 'large' | 'medium' | 'small'
+export type MediaQuery = 'mobile' | 'tablet' | 'desktop'
 export interface Theme {
   name: ThemeName
   colors: Record<ColorKey, string>
@@ -39,6 +40,9 @@ export interface Theme {
     width: {
       [key in LayoutWidth]: string
     }
+  }
+  mediaQuery: {
+    [key in MediaQuery]: string
   }
 }
 
@@ -100,6 +104,11 @@ export const light: Theme = {
       medium: '760px',
       small: '320px',
     },
+  },
+  mediaQuery: {
+    mobile: '(max-width: 768px)',
+    tablet: '(max-width: 1024px)',
+    desktop: '(min-width: 1024px)',
   },
 }
 

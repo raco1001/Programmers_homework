@@ -1,11 +1,14 @@
 import { setupWorker } from 'msw/browser'
+import { banners } from './banner'
 import { bestBooks } from './books'
 import { addReview, reviewForMain, reviewsByBookId } from './review'
+
 const handlers = [
   reviewsByBookId,
   addReview,
   reviewForMain,
   bestBooks,
+  banners,
 ]
 
 // @ts-ignore - MSW v2 타입 시스템 이슈

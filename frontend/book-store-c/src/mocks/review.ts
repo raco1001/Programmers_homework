@@ -1,7 +1,7 @@
 import { BookReviewItemWrite, IBookReviewItem } from '@/models/book.model'
 import { fakerKO as faker } from '@faker-js/faker'
 import { http, HttpResponse } from 'msw'
-
+const API_URL = process.env.REACT_APP_API_BASE_URL
 // const mockReviewsData: IBookReviewItem[] = [
 //   {
 //     bookId: 'ebb7b7cd-0dee-11f0-910e-c277ba14597b',
@@ -36,7 +36,7 @@ const mockReviewData = (): IBookReviewItem[] => {
   })).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 }
 
-const API_URL = process.env.REACT_APP_API_BASE_URL
+
 
 export const reviewsByBookId =
   http.get(`${API_URL}/reviews/:bookId`, ({ request }) => {
