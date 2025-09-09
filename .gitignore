@@ -41,8 +41,6 @@
 **/*crash.log
 **/*.tfvars
 **/*.tfvars.json
-# .terraform.lock.hcl 은 보통 커밋 권장 (버전 재현성)
-# => 굳이 무시 규칙 추가하지 말 것
 
 # --- OS / Misc ---
 **/.DS_Store
