@@ -17,6 +17,13 @@ spec:
       containers:
         - name: notes-database
           image: mariadb:11.2.2
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 100m
+            limits:
+              memory: 256Mi
+              cpu: 200m
           env:
             - name: MARIADB_ROOT_PASSWORD
               value: root
